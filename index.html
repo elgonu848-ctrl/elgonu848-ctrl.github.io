@@ -239,6 +239,7 @@
 }
 mensaje.textContent = "";
     mostrarZonaPrivada(true);
+  cargarMateriales();
   });
 
   // Cerrar sesión.
@@ -254,6 +255,53 @@ mensaje.textContent = "";
     formulario.reset();
     mensaje.textContent = "Has cerrado sesión correctamente.";
   });
+async function cargarMateriales() {
+  const contenedores = {
+    apuntes: document.getElementById("lista-documentos"),
+    ejercicios: document.getElementById("lista-ejercicios"),
+    soluciones: document.getElementById("lista-soluciones")
+  };
+
+  Object.values(contenedores).forEach(contenedor => {
+    if (contenedor) contenedor.replaceChildren();
+  });
+
+  const { data, error } = await supabaseClient
+    .from("materiales")
+    .select("id, titulo, descripcion, tipo, url")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error al cargar materiales:", error);
+    return;
+  }
+
+  data.forEach(material => {
+    const tipo = (material.tipo || "").trim().toLowerCase();
+    const contenedor = contenedores[tipo];
+
+    if (!contenedor) return;
+
+    const elemento = document.createElement("div");
+    elemento.style.margin = "12px 0";
+
+    const enlace = document.createElement("a");
+    enlace.href = material.url;
+    enlace.textContent = material.titulo || "Abrir material";
+    enlace.target = "_blank";
+    enlace.rel = "noopener noreferrer";
+
+    elemento.appendChild(enlace);
+
+    if (material.descripcion) {
+      const descripcion = document.createElement("p");
+      descripcion.textContent = material.descripcion;
+      elemento.appendChild(descripcion);
+    }
+
+    contenedor.appendChild(elemento);
+  });
+}
 </script>
 </body>
 </html>
