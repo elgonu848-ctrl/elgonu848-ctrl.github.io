@@ -117,20 +117,143 @@
           <p>Conceptos, fórmulas y ejercicios prácticos.</p>
         </article>
       </div>
-    </section>
+   <section id="acceso">
+  <h2>Zona de alumnos</h2>
+  <p>Accede a tus apuntes, documentos y ejercicios.</p>
 
-    <section id="acceso">
-      <h2>Zona de alumnos</h2>
-      <p>
-        Próximamente podrás acceder aquí a tus apuntes,
-        documentos y ejercicios exclusivos.
-      </p>
-      <p>El acceso privado se configurará en la siguiente fase.</p>
-    </section>
+  <div id="login-alumnos">
+    <h3>Iniciar sesión</h3>
+
+    <form id="form-login">
+      <label for="email-alumno">Correo electrónico</label>
+      <input
+        type="email"
+        id="email-alumno"
+        placeholder="alumno@ejemplo.com"
+        autocomplete="username"
+        required
+      >
+
+      <label for="password-alumno">Contraseña</label>
+      <input
+        type="password"
+        id="password-alumno"
+        placeholder="Tu contraseña"
+        autocomplete="current-password"
+        required
+      >
+
+      <button type="submit">Entrar</button>
+      <p id="mensaje-login" role="status"></p>
+    </form>
+  </div>
+
+  <div id="contenido-alumnos" hidden>
+    <h3>Mis materiales</h3>
+    <p>Bienvenido a tu zona privada.</p>
+
+    <h4>Apuntes y documentos</h4>
+    <div id="lista-documentos"></div>
+
+    <h4>Ejercicios</h4>
+    <div id="lista-ejercicios"></div>
+
+    <h4>Soluciones</h4>
+    <div id="lista-soluciones"></div>
+
+    <button id="cerrar-sesion" type="button">
+      Cerrar sesión
+    </button>
+  </div>
+</section>
   </main>
 
   <footer>
     <p>Academia Orihuela Centro</p>
   </footer>
+<!-- Conexión con Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const SUPABASE_URL = "https://qolicwbeblyqtabpthmc.supabase.co";
+  const SUPABASE_KEY = "PEGA_AQUI_TU_CLAVE_PUBLICA";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const formulario = document.getElementById("form-login");
+  const zonaLogin = document.getElementById("login-alumnos");
+  const contenido = document.getElementById("contenido-alumnos");
+  const mensaje = document.getElementById("mensaje-login");
+  const botonCerrar = document.getElementById("cerrar-sesion");
+
+  function mostrarZonaPrivada(autenticado) {
+    if (zonaLogin) {
+      zonaLogin.style.display = autenticado ? "none" : "block";
+    }
+
+    if (contenido) {
+      contenido.style.display = autenticado ? "block" : "none";
+    }
+  }
+
+  // Ocultar el contenido privado al abrir la página.
+  mostrarZonaPrivada(false);
+
+  // Comprobar si el alumno ya tiene una sesión activa.
+  async function comprobarSesion() {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+      mensaje.textContent = "No se pudo comprobar la sesión.";
+      return;
+    }
+
+    mostrarZonaPrivada(Boolean(data.session));
+  }
+
+  comprobarSesion();
+
+  // Iniciar sesión con correo y contraseña.
+  formulario.addEventListener("submit", async function(evento) {
+    evento.preventDefault();
+
+    mensaje.textContent = "Comprobando datos...";
+
+    const email = document.getElementById("email-alumno").value.trim();
+    const password = document.getElementById("password-alumno").value;
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+    if (error) {
+      mensaje.textContent =
+        "No se ha podido iniciar sesión. Comprueba tu correo y contraseña.";
+      return;
+    }
+
+    mensaje.textContent = "";
+    mostrarZonaPrivada(true);
+  });
+
+  // Cerrar sesión.
+  botonCerrar.addEventListener("click", async function() {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      mensaje.textContent = "No se pudo cerrar la sesión.";
+      return;
+    }
+
+    mostrarZonaPrivada(false);
+    formulario.reset();
+    mensaje.textContent = "Has cerrado sesión correctamente.";
+  });
+</script>
 </body>
 </html>
