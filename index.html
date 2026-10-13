@@ -232,9 +232,11 @@
       });
 
     if (error) {
-      mensaje.textContent =
-        "No se ha podido iniciar sesión. Comprueba tu correo y contraseña.";
-      return;
+    mensaje.textContent =
+        "Error de inicio de sesión: " + error.message;
+    console.error("Error Supabase:", error);
+    return;
+}
     }
 
     mensaje.textContent = "";
