@@ -268,7 +268,7 @@ async function cargarMateriales() {
 
   const { data, error } = await supabaseClient
     .from("materiales")
-    .select("id, titulo, descripcion, tipo, url")
+    .select("id, titulo, descripcion, tipo, url, curso")
     .order("created_at", { ascending: false });
 
   if (error) {
