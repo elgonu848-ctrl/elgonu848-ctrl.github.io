@@ -237,9 +237,32 @@
     console.error("Error Supabase:", error);
     return;
 }
+if (error) {
+  mensaje.textContent =
+    "Error de inicio de sesión: " + error.message;
+  console.error("Error Supabase:", error);
+  return;
+}
+
+// Buscar el curso asignado al alumno que ha iniciado sesión.
+    const { data: alumno, error: errorAlumno } = await supabaseClient
+      .from("alumnos")
+      .select("curso")
+      .eq("user_id", data.user.id)
+      .single();
+
+    if (errorAlumno || !alumno) {
+      await supabaseClient.auth.signOut();
+      mensaje.textContent = "No se ha podido encontrar tu curso. Contacta con la academia.";
+      mostrarZonaPrivada(false);
+      return;
+    }
+
+    const cursoAlumno = alumno.curso;
+
 mensaje.textContent = "";
-    mostrarZonaPrivada(true);
-  cargarMateriales();
+mostrarZonaPrivada(true);
+cargarMateriales(cursoAlumno);
   });
 
   // Cerrar sesión.
@@ -255,7 +278,7 @@ mensaje.textContent = "";
     formulario.reset();
     mensaje.textContent = "Has cerrado sesión correctamente.";
   });
-async function cargarMateriales() {
+async function cargarMateriales(cursoAlumno) {
   const contenedores = {
     apuntes: document.getElementById("lista-documentos"),
     ejercicios: document.getElementById("lista-ejercicios"),
@@ -269,6 +292,7 @@ async function cargarMateriales() {
   const { data, error } = await supabaseClient
     .from("materiales")
     .select("id, titulo, descripcion, tipo, url, curso")
+    .eq("curso", cursoAlumno)
     .order("created_at", { ascending: false });
 
   if (error) {
