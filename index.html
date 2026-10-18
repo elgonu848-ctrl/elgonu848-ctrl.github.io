@@ -83,8 +83,8 @@
     <h1>Academia Orihuela Centro</h1>
   <nav>
   <a href="#inicio">Inicio</a>
-  <a href="#nuestra-academia">Nuestra academia</a>
-  <a href="#acceso">Zona de alumnos</a>
+  <a href="#nuestra-academia" onclick="mostrarApartado('nuestra-academia'); return false;">Nuestra academia</a>
+  <a href="#acceso" onclick="mostrarApartado('acceso'); return false;">Zona de alumnos</a>
 </nav>
   </header>
 
@@ -96,8 +96,8 @@
         Un espacio educativo para aprender, reforzar
         conocimientos y alcanzar tus objetivos.
       </p>
-      <a class="button" href="#nuestra academia">Nuestra academia</a>
-      <a class="button" href="#acceso">Zona de alumnos</a>
+     <a class="button" href="#nuestra-academia" onclick="mostrarApartado('nuestra-academia'); return false;">Nuestra academia</a>
+    <a class="button" href="#acceso" onclick="mostrarApartado('acceso'); return false;">Zona de alumnos</a>
     </div>
 
    <section id="acceso" hidden>
@@ -322,6 +322,18 @@ async function cargarMateriales(cursoAlumno) {
 
     contenedor.appendChild(elemento);
   });
+}
+  function mostrarApartado(apartado) {
+  const inicio = document.getElementById('inicio');
+  const acceso = document.getElementById('acceso');
+  const academia = document.getElementById('nuestra-academia');
+
+  inicio.hidden = true;
+  acceso.hidden = true;
+  academia.hidden = true;
+
+  document.getElementById(apartado).hidden = false;
+  window.location.hash = apartado;
 }
 </script>
 </body>
