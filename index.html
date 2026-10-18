@@ -76,6 +76,77 @@
       .hero h2 { font-size: 32px; }
       nav a { margin-left: 8px; }
     }
+    /* Mejoras para la zona privada del alumno */
+#acceso {
+  max-width: 950px;
+  margin: 30px auto;
+  padding: 35px 20px;
+  text-align: center;
+}
+
+#acceso h2 {
+  color: #17365d;
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+#acceso h3 {
+  color: #17365d;
+  margin: 24px 0 16px;
+}
+
+#acceso p {
+  color: #555;
+  line-height: 1.7;
+}
+
+#lista-documentos,
+#lista-ejercicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+#lista-documentos > div,
+#lista-ejercicios > div {
+  background: #ffffff;
+  border: 1px solid #e0e7ef;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  overflow-wrap: anywhere;
+}
+
+#lista-documentos a,
+#lista-ejercicios a {
+  color: #1769aa;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#lista-documentos a:hover,
+#lista-ejercicios a:hover {
+  text-decoration: underline;
+}
+
+#cerrar-sesion {
+  margin-top: 25px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  #acceso {
+    padding: 25px 12px;
+  }
+
+  #lista-documentos,
+  #lista-ejercicios {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 <body>
