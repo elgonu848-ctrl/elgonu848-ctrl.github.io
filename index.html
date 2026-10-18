@@ -100,7 +100,7 @@
     <a class="button" href="#acceso" onclick="mostrarApartado('acceso'); return false;">Zona de alumnos</a>
     </div>
 
-   <section id="acceso" hidden>
+   <section id="acceso" hidden style="display: none;">
   <h2>Zona de alumnos</h2>
   <p>Accede a tus apuntes, documentos y ejercicios.</p>
 
@@ -188,14 +188,19 @@
   const botonCerrar = document.getElementById("cerrar-sesion");
 
   function mostrarZonaPrivada(autenticado) {
-    if (zonaLogin) {
-      zonaLogin.style.display = autenticado ? "none" : "block";
-    }
-
-    if (contenido) {
-      contenido.style.display = autenticado ? "block" : "none";
-    }
+  if (zonaLogin) {
+    zonaLogin.style.display = autenticado ? 'none' : 'block';
   }
+
+  if (contenido) {
+    contenido.style.display = autenticado ? 'block' : 'none';
+  }
+
+  const acceso = document.getElementById('acceso');
+  if (acceso) {
+    acceso.hidden = true;
+  }
+}
 
   // Ocultar el contenido privado al abrir la página.
   mostrarZonaPrivada(false);
