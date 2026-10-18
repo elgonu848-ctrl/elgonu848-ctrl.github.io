@@ -278,15 +278,31 @@
 
   // Comprobar si el alumno ya tiene una sesión activa.
   async function comprobarSesion() {
-    const { data, error } = await supabaseClient.auth.getSession();
+  const { data, error } = await supabaseClient.auth.getSession();
 
-    if (error) {
-      mensaje.textContent = "No se pudo comprobar la sesión.";
-      return;
-    }
-
-    mostrarZonaPrivada(Boolean(data.session));
+  if (error) {
+    console.error("Error al comprobar la sesión:", error);
+    return;
   }
+
+  const sesion = data.session;
+  mostrarZonaPrivada(Boolean(sesion));
+
+  if (!sesion) return;
+
+  const { data: alumno, error: errorAlumno } = await supabaseClient
+    .from("alumnos")
+    .select("curso")
+    .eq("user_id", sesion.user.id)
+    .single();
+
+  if (errorAlumno || !alumno) {
+    console.error("Error al obtener el curso:", errorAlumno);
+    return;
+  }
+
+  await cargarMateriales(alumno.curso);
+}
 
   comprobarSesion();
 
