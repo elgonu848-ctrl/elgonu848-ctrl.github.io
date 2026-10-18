@@ -329,23 +329,25 @@ async function cargarMateriales(cursoAlumno) {
   });
 }
   function mostrarApartado(apartado) {
-  const inicio = document.getElementById('inicio');
-  const acceso = document.getElementById('acceso');
-  const academia = document.getElementById('nuestra-academia');
+  const inicio = document.getElementById("inicio");
+  const acceso = document.getElementById("acceso");
+  const academia = document.getElementById("nuestra-academia");
 
-inicio.hidden = true;
-acceso.hidden = true;
-academia.hidden = true;
+  inicio.hidden = true;
+  acceso.hidden = true;
+  academia.hidden = true;
 
-inicio.style.display = "none";
-acceso.style.display = "none";
-academia.style.display = "none";
+  inicio.style.display = "none";
+  acceso.style.display = "none";
+  academia.style.display = "none";
 
-const destino = document.getElementById(apartado);
-destino.hidden = false;
-destino.style.display = "block";
-    
-window.location.hash = apartado;
+  const destino = document.getElementById(apartado);
+
+  if (destino) {
+    destino.hidden = false;
+    destino.style.display = "block";
+    window.location.hash = apartado;
+  }
 }
 </script>
 </body>
