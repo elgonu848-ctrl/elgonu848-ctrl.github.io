@@ -158,9 +158,6 @@
     <h4>Ejercicios</h4>
     <div id="lista-ejercicios"></div>
 
-    <h4>Soluciones</h4>
-    <div id="lista-soluciones"></div>
-
     <button id="cerrar-sesion" type="button">
       Cerrar sesión
     </button>
@@ -281,8 +278,7 @@ cargarMateriales(cursoAlumno);
 async function cargarMateriales(cursoAlumno) {
   const contenedores = {
     apuntes: document.getElementById("lista-documentos"),
-    ejercicios: document.getElementById("lista-ejercicios"),
-    soluciones: document.getElementById("lista-soluciones")
+    ejercicios: document.getElementById("lista-ejercicios")
   };
 
   Object.values(contenedores).forEach(contenedor => {
