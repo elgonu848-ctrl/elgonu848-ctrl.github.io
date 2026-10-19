@@ -288,6 +288,119 @@
     font-size: 18px;
   }
 }
+    /* NUEVA PORTADA ACADEMIA */
+body {
+    background: #f1f5fb;
+    color: #203653;
+}
+
+header {
+    background: #192f50;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+header h1 {
+    color: white;
+    font-size: 25px;
+}
+
+header nav a {
+    color: white;
+    margin-left: 16px;
+}
+
+.hero {
+    background: #f1f5fb;
+    color: #203653;
+    padding: 38px 24px;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.hero h2 {
+    color: #203653;
+    font-size: 42px;
+}
+
+.hero p {
+    color: #53647b;
+    font-size: 20px;
+    max-width: 650px;
+    margin: 20px auto;
+    line-height: 1.6;
+}
+
+.imagen-portada {
+    display: block;
+    width: 100%;
+    max-width: 900px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 28px;
+    margin: 0 auto 28px;
+}
+
+.botones-portada {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 540px;
+    margin: 24px auto;
+}
+
+.botones-portada a {
+    display: block;
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+}
+
+.boton-alumnos {
+    background: #176ba5;
+    color: white;
+}
+
+.boton-academia {
+    background: transparent;
+    color: #176ba5;
+    border: 2px solid #176ba5;
+}
+
+.frase-portada {
+    color: #68788e;
+    text-align: center;
+    font-size: 17px;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 18px;
+    }
+
+    header nav a {
+        margin-left: 8px;
+        font-size: 13px;
+    }
+
+    .hero {
+        padding: 25px 16px;
+    }
+
+    .hero h2 {
+        font-size: 34px;
+    }
+
+    .imagen-portada {
+        height: 220px;
+    }
+}
   </style>
 </head>
 <body>
