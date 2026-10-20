@@ -742,6 +742,41 @@ header nav a {
   font-size: clamp(10px, 1.5vw, 17px);
 }
 
+  
+
+/* Botones para filtrar materiales por asignatura */
+.botones-asignaturas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin: 14px 0 18px;
+}
+.botones-asignaturas button {
+  min-height: 42px;
+  padding: 10px 8px;
+  border: 1px solid #b9d4f2;
+  border-radius: 10px;
+  background: #edf5ff;
+  color: #174a8b;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+.botones-asignaturas button:hover,
+.botones-asignaturas button.activa {
+  background: #1769d2;
+  color: #fff;
+  border-color: #1769d2;
+}
+.botones-asignaturas button:focus-visible { outline: 3px solid #8bbcff; outline-offset: 2px; }
+.sin-materiales { margin: 10px 0; padding: 12px; border-radius: 10px; background: #f5f8fc; color: #63758c; font-size: 14px; }
+@media (max-width: 460px) {
+  .botones-asignaturas { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .botones-asignaturas button { font-size: 12px; padding: 9px 5px; }
+}
+
   </style>
 </head>
 <body>
@@ -841,7 +876,14 @@ header nav a {
           <div class="icono-material icono-libro" aria-hidden="true">📘</div>
           <div><h4>Apuntes y documentos</h4><p>Esquemas, resúmenes, temas teóricos y otros documentos de apoyo.</p></div>
         </div>
+        <div class="botones-asignaturas" role="group" aria-label="Filtrar apuntes por asignatura">
+          <button type="button" onclick="filtrarAsignatura('apuntes','matematicas',this)">Matemáticas</button>
+          <button type="button" onclick="filtrarAsignatura('apuntes','fisica-quimica',this)">Física y Química</button>
+          <button type="button" onclick="filtrarAsignatura('apuntes','lengua',this)">Lengua</button>
+          <button type="button" onclick="filtrarAsignatura('apuntes','dibujo',this)">Dibujo</button>
+        </div>
         <div id="lista-documentos" class="lista-materiales"></div>
+        <p id="sin-materiales-documentos" class="sin-materiales" hidden>No hay apuntes de esta asignatura todavía.</p>
         <p class="enlace-ver-todos">▤ <span>Todos los apuntes y documentos</span></p>
       </article>
 
@@ -850,7 +892,14 @@ header nav a {
           <div class="icono-material icono-lapiz" aria-hidden="true">✏️</div>
           <div><h4>Ejercicios</h4><p>Actividades de práctica para afianzar los conocimientos.</p></div>
         </div>
+        <div class="botones-asignaturas" role="group" aria-label="Filtrar ejercicios por asignatura">
+          <button type="button" onclick="filtrarAsignatura('ejercicios','matematicas',this)">Matemáticas</button>
+          <button type="button" onclick="filtrarAsignatura('ejercicios','fisica-quimica',this)">Física y Química</button>
+          <button type="button" onclick="filtrarAsignatura('ejercicios','lengua',this)">Lengua</button>
+          <button type="button" onclick="filtrarAsignatura('ejercicios','dibujo',this)">Dibujo</button>
+        </div>
         <div id="lista-ejercicios" class="lista-materiales"></div>
+        <p id="sin-materiales-ejercicios" class="sin-materiales" hidden>No hay ejercicios de esta asignatura todavía.</p>
         <p class="enlace-ver-todos">▤ <span>Ver todos los ejercicios</span></p>
       </article>
     </div>
@@ -1049,6 +1098,7 @@ async function cargarMateriales(cursoAlumno) {
 
     const elemento = document.createElement("div");
     elemento.style.margin = "12px 0";
+    elemento.dataset.asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
 
     const enlace = document.createElement("a");
     enlace.href = material.url;
@@ -1067,6 +1117,39 @@ async function cargarMateriales(cursoAlumno) {
     contenedor.appendChild(elemento);
   });
 }
+  // Clasifica cada material por las palabras que aparezcan en su título o descripción.
+  // Para que el filtro funcione, conviene incluir la asignatura en el título del material.
+  function detectarAsignatura(texto) {
+    const t = (texto || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (/\b(matematicas?|algebra|ecuaciones?|fracciones?|aritmetica|calculo|porcentajes?|numeros?)\b/.test(t)) return "matematicas";
+    if (/\b(fisica|quimica|fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
+    if (/\b(lengua|gramatica|sintaxis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?)\b/.test(t)) return "lengua";
+    if (/\b(dibujo|geometria|dibujo tecnico|perspectiva|laminas?|trazados?)\b/.test(t)) return "dibujo";
+    return "sin-asignatura";
+  }
+
+  function filtrarAsignatura(tipo, asignatura, boton) {
+    const idLista = tipo === "apuntes" ? "lista-documentos" : "lista-ejercicios";
+    const idAviso = tipo === "apuntes" ? "sin-materiales-documentos" : "sin-materiales-ejercicios";
+    const lista = document.getElementById(idLista);
+    const aviso = document.getElementById(idAviso);
+    if (!lista) return;
+    let encontrados = 0;
+    lista.querySelectorAll(":scope > div").forEach(elemento => {
+      const coincide = elemento.dataset.asignatura === asignatura;
+      elemento.hidden = !coincide;
+      if (coincide) encontrados++;
+    });
+    if (aviso) aviso.hidden = encontrados > 0;
+    const grupo = boton && boton.parentElement;
+    if (grupo) {
+      grupo.querySelectorAll("button").forEach(b => {
+        b.classList.toggle("activa", b === boton);
+        b.setAttribute("aria-pressed", b === boton ? "true" : "false");
+      });
+    }
+  }
+
   function mostrarApartado(apartado) {
   const inicio = document.getElementById("inicio");
   const acceso = document.getElementById("acceso");
