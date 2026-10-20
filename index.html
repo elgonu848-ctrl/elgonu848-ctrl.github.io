@@ -792,7 +792,31 @@ header nav a {
 .contenido-asignatura .material-asignatura p { margin: 7px 0 0; color: #63758c; font-size: 13px; line-height: 1.45; }
 .aviso-asignatura { margin: 4px 0; color: #63758c; font-size: 14px; }
 
-  </style>
+  /* Ajustes finales: los materiales solo se muestran dentro de su asignatura */
+#lista-documentos[hidden],
+#lista-ejercicios[hidden] { display: none !important; }
+.contenido-asignatura[hidden] { display: none !important; }
+.contenido-asignatura:not([hidden]) {
+  display: block; padding: 10px 12px 12px; margin-top: 0;
+  border: 1px solid #d7e6f4; border-top: 0; border-radius: 0 0 12px 12px;
+  background: #f8fbff;
+}
+.bloque-asignatura { margin-bottom: 8px; }
+.boton-asignatura[aria-expanded="true"] {
+  border-radius: 10px 10px 0 0; background: #1769d2; color: #fff; border-color: #1769d2;
+}
+.material-asignatura { margin: 0 0 9px; padding: 0; border: 0; background: transparent; }
+.material-asignatura:last-child { margin-bottom: 0; }
+.material-asignatura a {
+  display: block; box-sizing: border-box; width: 100%; padding: 10px 12px;
+  border-radius: 8px; background: #1680df; color: #fff !important;
+  text-decoration: none; font-weight: 700; text-align: center;
+}
+.material-asignatura a:hover { background: #125fb1; }
+.material-asignatura p { margin: 7px 2px 0; font-size: .9rem; line-height: 1.4; color: #4b5b6b; }
+.aviso-asignatura { margin: 0; padding: 8px 2px; color: #637386; font-size: .9rem; }
+
+</style>
 </head>
 <body>
   <header>
