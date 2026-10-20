@@ -777,6 +777,21 @@ header nav a {
   .botones-asignaturas button { font-size: 12px; padding: 9px 5px; }
 }
 
+
+/* Cada asignatura contiene sus propios materiales desplegables */
+.asignaturas-acordeon { display: grid; gap: 10px; margin: 14px 0 18px; }
+.bloque-asignatura { border: 1px solid #c8ddf5; border-radius: 12px; overflow: hidden; background: #f7fbff; }
+.boton-asignatura { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 15px; border: 0; background: #e8f3ff; color: #174a8b; font: inherit; font-weight: 700; text-align: left; cursor: pointer; }
+.boton-asignatura:hover, .boton-asignatura[aria-expanded="true"] { background: #1769d2; color: #fff; }
+.boton-asignatura span { font-size: 20px; line-height: 1; }
+.contenido-asignatura { padding: 10px 12px 12px; background: #fff; border-top: 1px solid #dce8f5; }
+.contenido-asignatura[hidden] { display: none !important; }
+.contenido-asignatura .material-asignatura { padding: 10px; border: 1px solid #e1eaf5; border-radius: 10px; background: #f9fbff; margin: 0 0 9px; }
+.contenido-asignatura .material-asignatura:last-child { margin-bottom: 0; }
+.contenido-asignatura .material-asignatura a { display: block; width: 100%; padding: 10px 12px; border-radius: 8px; background: #1769d2; color: #fff !important; text-align: center; font-weight: 700; text-decoration: none; white-space: normal; }
+.contenido-asignatura .material-asignatura p { margin: 7px 0 0; color: #63758c; font-size: 13px; line-height: 1.45; }
+.aviso-asignatura { margin: 4px 0; color: #63758c; font-size: 14px; }
+
   </style>
 </head>
 <body>
@@ -876,14 +891,14 @@ header nav a {
           <div class="icono-material icono-libro" aria-hidden="true">📘</div>
           <div><h4>Apuntes y documentos</h4><p>Esquemas, resúmenes, temas teóricos y otros documentos de apoyo.</p></div>
         </div>
-        <div class="botones-asignaturas" role="group" aria-label="Filtrar apuntes por asignatura">
-          <button type="button" onclick="filtrarAsignatura('apuntes','matematicas',this)">Matemáticas</button>
-          <button type="button" onclick="filtrarAsignatura('apuntes','fisica-quimica',this)">Física y Química</button>
-          <button type="button" onclick="filtrarAsignatura('apuntes','lengua',this)">Lengua</button>
-          <button type="button" onclick="filtrarAsignatura('apuntes','dibujo',this)">Dibujo</button>
+        <div class="asignaturas-acordeon" aria-label="Apuntes por asignatura">
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="apuntes-matematicas" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="apuntes-lengua" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="apuntes-dibujo" hidden></div></div>
         </div>
-        <div id="lista-documentos" class="lista-materiales"></div>
-        <p id="sin-materiales-documentos" class="sin-materiales" hidden>No hay apuntes de esta asignatura todavía.</p>
+        <div id="lista-documentos" class="lista-materiales" hidden></div>
+        <p id="sin-materiales-documentos" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
         <p class="enlace-ver-todos">▤ <span>Todos los apuntes y documentos</span></p>
       </article>
 
@@ -892,14 +907,14 @@ header nav a {
           <div class="icono-material icono-lapiz" aria-hidden="true">✏️</div>
           <div><h4>Ejercicios</h4><p>Actividades de práctica para afianzar los conocimientos.</p></div>
         </div>
-        <div class="botones-asignaturas" role="group" aria-label="Filtrar ejercicios por asignatura">
-          <button type="button" onclick="filtrarAsignatura('ejercicios','matematicas',this)">Matemáticas</button>
-          <button type="button" onclick="filtrarAsignatura('ejercicios','fisica-quimica',this)">Física y Química</button>
-          <button type="button" onclick="filtrarAsignatura('ejercicios','lengua',this)">Lengua</button>
-          <button type="button" onclick="filtrarAsignatura('ejercicios','dibujo',this)">Dibujo</button>
+        <div class="asignaturas-acordeon" aria-label="Ejercicios por asignatura">
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-matematicas" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-lengua" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-dibujo" hidden></div></div>
         </div>
-        <div id="lista-ejercicios" class="lista-materiales"></div>
-        <p id="sin-materiales-ejercicios" class="sin-materiales" hidden>No hay ejercicios de esta asignatura todavía.</p>
+        <div id="lista-ejercicios" class="lista-materiales" hidden></div>
+        <p id="sin-materiales-ejercicios" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
         <p class="enlace-ver-todos">▤ <span>Ver todos los ejercicios</span></p>
       </article>
     </div>
@@ -1070,14 +1085,12 @@ cargarMateriales(cursoAlumno);
     mensaje.textContent = "Has cerrado sesión correctamente.";
   });
 async function cargarMateriales(cursoAlumno) {
-  const contenedores = {
-    apuntes: document.getElementById("lista-documentos"),
-    ejercicios: document.getElementById("lista-ejercicios")
-  };
-
-  Object.values(contenedores).forEach(contenedor => {
-    if (contenedor) contenedor.replaceChildren();
-  });
+  const tipos = ["apuntes", "ejercicios"];
+  const asignaturas = ["matematicas", "fisica-quimica", "lengua", "dibujo"];
+  tipos.forEach(tipo => asignaturas.forEach(asignatura => {
+    const zona = document.getElementById(`${tipo}-${asignatura}`);
+    if (zona) zona.replaceChildren();
+  }));
 
   const { data, error } = await supabaseClient
     .from("materiales")
@@ -1091,64 +1104,60 @@ async function cargarMateriales(cursoAlumno) {
   }
 
   data.forEach(material => {
-    const tipo = (material.tipo || "").trim().toLowerCase();
-    const contenedor = contenedores[tipo];
-
-    if (!contenedor) return;
+    const tipoOriginal = (material.tipo || "").trim().toLowerCase();
+    const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
+    if (!tipos.includes(tipo)) return;
+    const asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
+    if (!asignaturas.includes(asignatura)) return;
+    const zona = document.getElementById(`${tipo}-${asignatura}`);
+    if (!zona) return;
 
     const elemento = document.createElement("div");
-    elemento.style.margin = "12px 0";
-    elemento.dataset.asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
-
+    elemento.className = "material-asignatura";
     const enlace = document.createElement("a");
-    enlace.href = material.url;
+    enlace.href = material.url || "#";
     enlace.textContent = material.titulo || "Abrir material";
     enlace.target = "_blank";
     enlace.rel = "noopener noreferrer";
-
     elemento.appendChild(enlace);
-
     if (material.descripcion) {
       const descripcion = document.createElement("p");
       descripcion.textContent = material.descripcion;
       elemento.appendChild(descripcion);
     }
-
-    contenedor.appendChild(elemento);
+    zona.appendChild(elemento);
   });
-}
-  // Clasifica cada material por las palabras que aparezcan en su título o descripción.
-  // Para que el filtro funcione, conviene incluir la asignatura en el título del material.
-  function detectarAsignatura(texto) {
-    const t = (texto || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    if (/\b(matematicas?|algebra|ecuaciones?|fracciones?|aritmetica|calculo|porcentajes?|numeros?)\b/.test(t)) return "matematicas";
-    if (/\b(fisica|quimica|fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
-    if (/\b(lengua|gramatica|sintaxis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?)\b/.test(t)) return "lengua";
-    if (/\b(dibujo|geometria|dibujo tecnico|perspectiva|laminas?|trazados?)\b/.test(t)) return "dibujo";
-    return "sin-asignatura";
-  }
 
-  function filtrarAsignatura(tipo, asignatura, boton) {
-    const idLista = tipo === "apuntes" ? "lista-documentos" : "lista-ejercicios";
-    const idAviso = tipo === "apuntes" ? "sin-materiales-documentos" : "sin-materiales-ejercicios";
-    const lista = document.getElementById(idLista);
-    const aviso = document.getElementById(idAviso);
-    if (!lista) return;
-    let encontrados = 0;
-    lista.querySelectorAll(":scope > div").forEach(elemento => {
-      const coincide = elemento.dataset.asignatura === asignatura;
-      elemento.hidden = !coincide;
-      if (coincide) encontrados++;
-    });
-    if (aviso) aviso.hidden = encontrados > 0;
-    const grupo = boton && boton.parentElement;
-    if (grupo) {
-      grupo.querySelectorAll("button").forEach(b => {
-        b.classList.toggle("activa", b === boton);
-        b.setAttribute("aria-pressed", b === boton ? "true" : "false");
-      });
+  // Si una asignatura no tiene material, lo indicamos dentro de su propio desplegable.
+  tipos.forEach(tipo => asignaturas.forEach(asignatura => {
+    const zona = document.getElementById(`${tipo}-${asignatura}`);
+    if (zona && zona.children.length === 0) {
+      const aviso = document.createElement("p");
+      aviso.className = "aviso-asignatura";
+      aviso.textContent = "Todavía no hay materiales de esta asignatura.";
+      zona.appendChild(aviso);
     }
-  }
+  }));
+}
+
+function detectarAsignatura(texto) {
+  const t = (texto || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (/\b(matematicas?|algebra|ecuaciones?|fracciones?|aritmetica|calculo|porcentajes?|numeros?)\b/.test(t)) return "matematicas";
+  if (/\b(fisica|quimica|fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
+  if (/\b(lengua|gramatica|sintaxis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?)\b/.test(t)) return "lengua";
+  if (/\b(dibujo|geometria|dibujo tecnico|perspectiva|laminas?|trazados?)\b/.test(t)) return "dibujo";
+  return "sin-asignatura";
+}
+
+function alternarAsignatura(tipo, asignatura, boton) {
+  const zona = document.getElementById(`${tipo}-${asignatura}`);
+  if (!zona || !boton) return;
+  const abierto = boton.getAttribute("aria-expanded") === "true";
+  boton.setAttribute("aria-expanded", abierto ? "false" : "true");
+  zona.hidden = abierto;
+  const simbolo = boton.querySelector("span");
+  if (simbolo) simbolo.textContent = abierto ? "＋" : "−";
+}
 
   function mostrarApartado(apartado) {
   const inicio = document.getElementById("inicio");
