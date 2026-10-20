@@ -36,7 +36,6 @@
     border-radius: 0 0 24px 24px;
     margin-bottom: 30px;
 }
-    }
    .hero h2 {
     font-size: 42px;
     margin: 0 0 18px;
@@ -648,65 +647,84 @@ header nav a {
   }
 }
 
-    /* MEJORA VISUAL DE LA ZONA DE ALUMNOS */
-#contenido-alumnos {
-    max-width: 1200px;
-    margin: 25px auto;
-    padding: 30px;
-    background: rgba(255, 255, 255, 0.88);
-    border-radius: 24px;
-    box-shadow: 0 8px 28px rgba(23, 54, 93, 0.12);
+
+
+/* DISEÑO OBJETIVO: ZONA DE ALUMNOS */
+#acceso {
+  width: min(1280px, 100%);
+  max-width: none;
+  margin: 0 auto;
+  padding: 22px 28px 48px;
+  text-align: left;
+  background: #f3f7fc;
+  color: #17365d;
+}
+#acceso .zona-banner {
+  min-height: 165px;
+  display: flex;
+  align-items: center;
+  padding: 28px 42px;
+  margin-bottom: 22px;
+  border-radius: 22px;
+  overflow: hidden;
+  color: #102f61;
+  background: linear-gradient(105deg, rgba(83,164,235,.96), rgba(182,222,255,.94)), url('/799c252b-39c3-467c-8250-bcc3ab8445c5.png') center/cover no-repeat;
+}
+#acceso .zona-banner h2 { margin: 0 0 8px; font-size: clamp(30px, 4vw, 46px); color: #102f61; }
+#acceso .zona-banner p { margin: 0; font-size: 18px; color: #17365d; }
+#acceso .panel-login { max-width: 520px; margin: 30px auto; padding: 30px; border-radius: 18px; background: white; box-shadow: 0 5px 22px rgba(23,54,93,.10); }
+#form-login { display: grid; gap: 10px; text-align: left; }
+#form-login label { font-weight: 700; color: #17365d; }
+#form-login input { width: 100%; padding: 12px 14px; border: 1px solid #c8d8eb; border-radius: 9px; font: inherit; }
+#form-login button { margin-top: 8px; padding: 13px 18px; border: 0; border-radius: 10px; background: #1769d2; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+#mensaje-login { overflow-wrap: anywhere; }
+#contenido-alumnos { margin-top: 0; padding: 0; background: transparent; box-shadow: none; }
+#contenido-alumnos .bienvenida-alumno { display: flex; align-items: center; gap: 16px; padding: 18px 24px; margin: 0 0 28px; background: #fff; border: 1px solid #e1eaf5; border-radius: 18px; box-shadow: 0 4px 16px rgba(23,54,93,.07); }
+.avatar-alumno { display: grid; place-items: center; flex: 0 0 68px; width: 68px; height: 68px; border-radius: 50%; background: #dcecff; font-size: 34px; }
+.saludo-alumno { flex: 1; }
+#contenido-alumnos .saludo-alumno h3 { margin: 0 0 4px; font-size: 24px; color: #17365d; }
+#contenido-alumnos .saludo-alumno p { margin: 0; color: #53647b; }
+.curso-alumno { display: flex; align-items: center; gap: 12px; padding: 10px 18px; border-radius: 12px; background: #f1f7ff; color: #174a8b; }
+.curso-alumno > span { font-size: 28px; }
+.curso-alumno small, .curso-alumno strong { display: block; }
+.curso-alumno small { margin-bottom: 3px; color: #53647b; }
+.curso-alumno strong { font-size: 18px; }
+#cerrar-sesion { margin: 0 0 0 8px; padding: 12px 18px; border: 1px solid #246da3; border-radius: 10px; color: #174a8b; background: white; font-weight: 700; cursor: pointer; white-space: nowrap; }
+#contenido-alumnos .titulo-materiales { margin: 0 0 18px; }
+#contenido-alumnos .titulo-materiales h3 { margin: 0 0 5px; font-size: 34px; color: #17365d; }
+#contenido-alumnos .titulo-materiales p { margin: 0; color: #53647b; font-size: 17px; }
+.columnas-materiales { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; align-items: start; }
+.panel-materiales { min-width: 0; padding: 22px; border: 1px solid #e1eaf5; border-radius: 18px; background: white; box-shadow: 0 5px 18px rgba(23,54,93,.07); }
+.cabecera-materiales { display: flex; align-items: center; gap: 16px; min-height: 90px; margin-bottom: 14px; }
+.icono-material { display: grid; place-items: center; flex: 0 0 82px; width: 82px; height: 82px; border-radius: 16px; background: #e2f1ff; font-size: 42px; }
+.cabecera-materiales h4 { margin: 0 0 6px !important; font-size: 24px !important; color: #17365d !important; }
+.cabecera-materiales p { margin: 0; line-height: 1.45; color: #687b95; }
+.lista-materiales { display: grid; gap: 10px; }
+.lista-materiales > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px 0; margin: 0 !important; border-top: 1px solid #edf2f8; }
+.lista-materiales a { display: inline-block; padding: 10px 18px; border-radius: 9px; background: #1769d2; color: white !important; text-decoration: none; font-weight: 700; text-align: center; white-space: nowrap; }
+.lista-materiales a:hover { background: #104fa5; text-decoration: none !important; }
+.lista-materiales p { grid-column: 1 / -1; margin: -6px 0 0; color: #718096; font-size: 14px; line-height: 1.45; }
+.enlace-ver-todos { display: flex; align-items: center; gap: 10px; margin: 16px 0 0; padding-top: 14px; border-top: 1px solid #edf2f8; color: #4f83bd; font-weight: 700; }
+@media (max-width: 760px) {
+  #acceso { padding: 16px 12px 32px; }
+  #acceso .zona-banner { min-height: 145px; padding: 24px; }
+  #contenido-alumnos .bienvenida-alumno { flex-wrap: wrap; padding: 16px; }
+  .saludo-alumno { min-width: 160px; }
+  .curso-alumno { margin-left: 0; }
+  #cerrar-sesion { margin-left: auto; }
+  .columnas-materiales { grid-template-columns: 1fr; }
+  .panel-materiales { padding: 18px; }
+}
+@media (max-width: 460px) {
+  .avatar-alumno { flex-basis: 52px; width: 52px; height: 52px; font-size: 27px; }
+  #contenido-alumnos .saludo-alumno h3 { font-size: 20px; }
+  .cabecera-materiales { align-items: flex-start; gap: 12px; }
+  .icono-material { flex-basis: 58px; width: 58px; height: 58px; font-size: 30px; }
+  .cabecera-materiales h4 { font-size: 20px !important; }
+  .lista-materiales > div { grid-template-columns: minmax(0, 1fr); }
+  .lista-materiales a { justify-self: start; }
 }
 
-#contenido-alumnos h3 {
-    color: #174a8b;
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-#contenido-alumnos .subtitulo-alumno {
-    color: #526b8a;
-    margin-bottom: 25px;
-}
-
-#lista-documentos,
-#lista-ejercicios {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-}
-
-#lista-documentos > div,
-#lista-ejercicios > div {
-    background: white;
-    padding: 18px;
-    border: 1px solid #dce8f5;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(23, 54, 93, 0.08);
-}
-
-#lista-documentos a,
-#lista-ejercicios a {
-    display: inline-block;
-    background: #1769d2;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 9px;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-@media (max-width: 600px) {
-    #contenido-alumnos {
-        padding: 18px;
-        margin: 15px;
-    }
-
-    #lista-documentos,
-    #lista-ejercicios {
-        grid-template-columns: 1fr;
-    }
-}
   </style>
 </head>
 <body>
@@ -762,49 +780,63 @@ header nav a {
 </div>
 
    <section id="acceso" hidden style="display: none;">
-  <h2>Zona de alumnos</h2>
-  <p>Accede a tus apuntes, documentos y ejercicios.</p>
+  <div class="zona-banner">
+    <div>
+      <h2>Zona de alumnos</h2>
+      <p>Accede a tus apuntes, documentos y ejercicios.</p>
+    </div>
+  </div>
 
-  <div id="login-alumnos">
+  <div id="login-alumnos" class="panel-login">
     <h3>Iniciar sesión</h3>
-
     <form id="form-login">
       <label for="email-alumno">Correo electrónico</label>
-      <input
-        type="email"
-        id="email-alumno"
-        placeholder="alumno@ejemplo.com"
-        autocomplete="username"
-        required
-      >
-
+      <input type="email" id="email-alumno" placeholder="alumno@ejemplo.com" autocomplete="username" required>
       <label for="password-alumno">Contraseña</label>
-      <input
-        type="password"
-        id="password-alumno"
-        placeholder="Tu contraseña"
-        autocomplete="current-password"
-        required
-      >
-
+      <input type="password" id="password-alumno" placeholder="Tu contraseña" autocomplete="current-password" required>
       <button type="submit">Entrar</button>
       <p id="mensaje-login" role="status"></p>
     </form>
   </div>
 
   <div id="contenido-alumnos" hidden>
-    <h3>Mis materiales</h3>
-    <p class="subtitulo-alumno">Tus materiales, tus ejercicios y todo lo que necesitas para avanzar.</p>
+    <div class="bienvenida-alumno">
+      <div class="avatar-alumno" aria-hidden="true">👤</div>
+      <div class="saludo-alumno">
+        <h3>¡Hola, alumno/a!</h3>
+        <p>Bienvenido/a a tu zona privada.</p>
+      </div>
+      <div class="curso-alumno">
+        <span aria-hidden="true">🎓</span>
+        <div><small>Mi curso</small><strong id="curso-alumno">Tu curso</strong></div>
+      </div>
+      <button id="cerrar-sesion" type="button">⇥ Cerrar sesión</button>
+    </div>
 
-    <h4>📘 Apuntes y documentos</h4>
-    <div id="lista-documentos"></div>
+    <div class="titulo-materiales">
+      <h3>Mis materiales</h3>
+      <p>Aquí encontrarás todos los apuntes, documentos y ejercicios de tu curso.</p>
+    </div>
 
-    <h4>✏️ Ejercicios</h4>
-    <div id="lista-ejercicios"></div>
+    <div class="columnas-materiales">
+      <article class="panel-materiales">
+        <div class="cabecera-materiales">
+          <div class="icono-material icono-libro" aria-hidden="true">📘</div>
+          <div><h4>Apuntes y documentos</h4><p>Esquemas, resúmenes, temas teóricos y otros documentos de apoyo.</p></div>
+        </div>
+        <div id="lista-documentos" class="lista-materiales"></div>
+        <p class="enlace-ver-todos">▤ <span>Todos los apuntes y documentos</span></p>
+      </article>
 
-    <button id="cerrar-sesion" type="button">
-    🚪 Cerrar sesión
-    </button>
+      <article class="panel-materiales">
+        <div class="cabecera-materiales">
+          <div class="icono-material icono-lapiz" aria-hidden="true">✏️</div>
+          <div><h4>Ejercicios</h4><p>Actividades de práctica para afianzar los conocimientos.</p></div>
+        </div>
+        <div id="lista-ejercicios" class="lista-materiales"></div>
+        <p class="enlace-ver-todos">▤ <span>Ver todos los ejercicios</span></p>
+      </article>
+    </div>
   </div>
 </section>
    <section id="nuestra-academia" hidden>
@@ -868,11 +900,7 @@ header nav a {
     contenido.style.display = autenticado ? 'block' : 'none';
   }
 
-  const acceso = document.getElementById('acceso');
-  if (acceso) {
-    acceso.hidden = true;
-  }
-}
+} 
 
   // Ocultar el contenido privado al abrir la página.
   mostrarZonaPrivada(false);
@@ -902,6 +930,7 @@ header nav a {
     return;
   }
 
+  document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
   await cargarMateriales(alumno.curso);
 }
 
@@ -928,13 +957,6 @@ header nav a {
     console.error("Error Supabase:", error);
     return;
 }
-if (error) {
-  mensaje.textContent =
-    "Error de inicio de sesión: " + error.message;
-  console.error("Error Supabase:", error);
-  return;
-}
-
 // Buscar el curso asignado al alumno que ha iniciado sesión.
     const { data: alumno, error: errorAlumno } = await supabaseClient
       .from("alumnos")
@@ -950,6 +972,7 @@ if (error) {
     }
 
     const cursoAlumno = alumno.curso;
+    document.getElementById("curso-alumno").textContent = cursoAlumno || "Sin curso asignado";
 
 mensaje.textContent = "";
 mostrarZonaPrivada(true);
