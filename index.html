@@ -648,6 +648,65 @@ header nav a {
   }
 }
 
+    /* MEJORA VISUAL DE LA ZONA DE ALUMNOS */
+#contenido-alumnos {
+    max-width: 1200px;
+    margin: 25px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 24px;
+    box-shadow: 0 8px 28px rgba(23, 54, 93, 0.12);
+}
+
+#contenido-alumnos h3 {
+    color: #174a8b;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+#contenido-alumnos .subtitulo-alumno {
+    color: #526b8a;
+    margin-bottom: 25px;
+}
+
+#lista-documentos,
+#lista-ejercicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+#lista-documentos > div,
+#lista-ejercicios > div {
+    background: white;
+    padding: 18px;
+    border: 1px solid #dce8f5;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(23, 54, 93, 0.08);
+}
+
+#lista-documentos a,
+#lista-ejercicios a {
+    display: inline-block;
+    background: #1769d2;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    #contenido-alumnos {
+        padding: 18px;
+        margin: 15px;
+    }
+
+    #lista-documentos,
+    #lista-ejercicios {
+        grid-template-columns: 1fr;
+    }
+}
   </style>
 </head>
 <body>
