@@ -725,6 +725,23 @@ header nav a {
   .lista-materiales a { justify-self: start; }
 }
 
+
+
+/* AJUSTE DE PORTADA: FRASES EN UNA SOLA LÍNEA */
+#inicio > h2 {
+  white-space: nowrap;
+  font-size: clamp(18px, 3.5vw, 42px);
+  text-align: center;
+}
+#inicio > .frase-portada {
+  display: block;
+  width: 100%;
+  margin: 24px auto 0;
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(10px, 1.5vw, 17px);
+}
+
   </style>
 </head>
 <body>
@@ -754,7 +771,7 @@ header nav a {
     alt="Libros y material de estudio"
   >
 
-  <h2>Aprende. Practica.<br>Avanza.</h2>
+  <h2>Aprende. Practica. Avanza</h2>
 
   <p class="texto-portada">
     Un espacio para aprender a tu ritmo,
