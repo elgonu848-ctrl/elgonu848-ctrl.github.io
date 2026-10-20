@@ -474,6 +474,95 @@ header nav a {
     margin-top: 24px;
     margin-bottom: 14px;
 }
+
+    /* DISEÑO DE LA ZONA DE ALUMNOS */
+#acceso {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 25px;
+    background: linear-gradient(135deg, #eef6ff, #dcecff);
+    border-radius: 22px;
+    color: #17365d;
+}
+
+#acceso h2 {
+    color: #17365d;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+#contenido-alumnos {
+    margin-top: 25px;
+    padding: 25px;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px rgba(30, 65, 120, 0.10);
+}
+
+#contenido-alumnos h3 {
+    color: #174a8b;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+#contenido-alumnos h4 {
+    font-size: 21px;
+    color: #245da0;
+    margin-top: 24px;
+    margin-bottom: 14px;
+}
+
+#lista-documentos,
+#lista-ejercicios {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+    /* TARJETAS DE MATERIALES Y EJERCICIOS */
+#lista-documentos > div,
+#lista-ejercicios > div {
+    background: #ffffff;
+    border: 1px solid #dce8f5;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 16px;
+    box-shadow: 0 5px 18px rgba(20, 65, 120, 0.10);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#lista-documentos > div:hover,
+#lista-ejercicios > div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 24px rgba(20, 65, 120, 0.18);
+}
+
+#lista-documentos a,
+#lista-ejercicios a {
+    display: inline-block;
+    background: #1769d2;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#lista-documentos a:hover,
+#lista-ejercicios a:hover {
+    background: #104fa5;
+}
+
+#cerrar-sesion {
+    background: #ffffff;
+    color: #174a8b;
+    border: 1px solid #174a8b;
+    border-radius: 12px;
+    padding: 12px 22px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 25px;
+}
   </style>
 </head>
 <body>
