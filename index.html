@@ -1553,6 +1553,89 @@ header nav a {
 }
 </style>
 
+
+<style>
+/* Mejora de legibilidad: texto ligeramente más grande en la zona de alumnos */
+#contenido-alumnos .titulo-materiales h3 { font-size: 38px !important; }
+#contenido-alumnos .titulo-materiales p { font-size: 19px !important; }
+#contenido-alumnos .saludo-alumno h3 { font-size: 27px !important; }
+#contenido-alumnos .saludo-alumno p { font-size: 15px !important; }
+.curso-alumno small { font-size: 13px !important; }
+.curso-alumno strong { font-size: 20px !important; }
+.boton-asignatura { font-size: 17px !important; padding: 16px 17px !important; }
+.ruta-asignatura { font-size: 15px !important; }
+.detalle-cabecera h3 { font-size: 31px !important; }
+.detalle-cabecera h4 { font-size: 19px !important; }
+.detalle-cabecera p { font-size: 16px !important; line-height: 1.5; }
+.detalle-archivos .material-asignatura { padding: 15px 17px !important; }
+.detalle-archivos .material-asignatura a { font-size: 15px !important; padding: 11px 17px !important; }
+.detalle-archivos .material-asignatura p { font-size: 15px !important; }
+.detalle-vacio { font-size: 16px !important; }
+.volver-asignaturas { font-size: 15px !important; padding: 11px 19px !important; }
+.sin-materiales { font-size: 16px !important; }
+@media (max-width: 600px) {
+  #contenido-alumnos .titulo-materiales h3 { font-size: 31px !important; }
+  #contenido-alumnos .titulo-materiales p { font-size: 16px !important; }
+  .boton-asignatura { font-size: 15px !important; padding: 14px 12px !important; }
+  .ruta-asignatura { font-size: 13px !important; }
+  .detalle-cabecera h3 { font-size: 26px !important; }
+  .detalle-cabecera h4 { font-size: 18px !important; }
+  .detalle-cabecera p, .detalle-archivos .material-asignatura p { font-size: 14px !important; }
+}
+</style>
+
+<style id="diseno-final-mis-asignaturas">
+/* Ajustes visuales basados en la maqueta aprobada */
+#contenido-alumnos .titulo-materiales { text-align: center; margin: 22px auto 18px; }
+#contenido-alumnos .titulo-materiales h3 { color:#103d78 !important; font-size: clamp(30px,3vw,38px) !important; margin-bottom:6px; }
+#contenido-alumnos .titulo-materiales p { font-size:17px !important; color:#244b7e; }
+#contenido-alumnos .columnas-materiales { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; align-items:start; }
+#contenido-alumnos .panel-materiales { background:rgba(255,255,255,.96); border:1px solid #d8e7f8; border-radius:18px; padding:20px; box-shadow:0 7px 22px rgba(18,55,99,.10); min-width:0; }
+#contenido-alumnos .cabecera-materiales { display:flex; align-items:center; gap:13px; margin-bottom:15px; }
+#contenido-alumnos .cabecera-materiales h4 { font-size:22px !important; color:#173b6d; margin:0 0 5px; }
+#contenido-alumnos .cabecera-materiales p { font-size:14px !important; line-height:1.4; margin:0; color:#466487; }
+#contenido-alumnos .icono-material { width:58px; height:58px; flex:0 0 58px; display:grid; place-items:center; border-radius:14px; background:#e1efff; font-size:29px; }
+#contenido-alumnos .asignaturas-acordeon { display:grid; gap:9px; }
+#contenido-alumnos .bloque-asignatura { margin:0; }
+#contenido-alumnos .boton-asignatura { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; background:#e1efff !important; border:1px solid #b9d8ff !important; border-radius:9px !important; color:#075fc5 !important; font-size:16px !important; font-weight:800; text-align:left; padding:13px 14px !important; }
+#contenido-alumnos .boton-asignatura span { font-size:20px; font-weight:500; }
+#contenido-alumnos .enlace-ver-todos { display:none !important; }
+#contenido-alumnos .pantalla-asignatura { max-width:920px; margin:22px auto 28px; padding:24px 28px; background:rgba(255,255,255,.97); border:1px solid #d7e5f5; border-radius:18px; box-shadow:0 8px 26px rgba(17,51,90,.13); }
+#contenido-alumnos.viendo-asignatura .zona-banner { display:none !important; }
+#contenido-alumnos .ruta-asignatura { font-size:14px !important; color:#075fc5; margin-bottom:18px; }
+#contenido-alumnos .detalle-cabecera { display:flex; align-items:center; gap:16px; margin:0 0 20px; }
+#contenido-alumnos .detalle-icono { width:64px; height:64px; flex:0 0 64px; border-radius:14px; display:grid; place-items:center; background:#0878ed; color:white; font-size:30px; }
+#contenido-alumnos .detalle-cabecera h3 { font-size:31px !important; line-height:1.15; color:#173b6d !important; margin:0 0 3px !important; }
+#contenido-alumnos .detalle-cabecera h4 { font-size:19px !important; color:#075fc5 !important; margin:0 0 4px !important; }
+#contenido-alumnos .detalle-cabecera p { font-size:15px !important; line-height:1.4; margin:0; color:#49617f; }
+#contenido-alumnos .detalle-archivos { display:grid; border:0; gap:0; background:transparent; overflow:visible; }
+#contenido-alumnos .fila-archivo { display:grid; grid-template-columns:40px minmax(0,1fr) auto; align-items:center; gap:13px; padding:12px 10px; border-bottom:1px solid #dce8f5; background:rgba(255,255,255,.82); }
+#contenido-alumnos .archivo-icono { width:34px; height:39px; border-radius:5px; display:grid; place-items:center; background:#e32929; color:#fff; font-size:10px; font-weight:900; letter-spacing:.2px; }
+#contenido-alumnos .fila-archivo:nth-child(4n) .archivo-icono, #contenido-alumnos .fila-archivo:nth-child(4n+1) .archivo-icono { background:#1675e8; }
+#contenido-alumnos .archivo-info { min-width:0; display:flex; flex-direction:column; gap:3px; }
+#contenido-alumnos .archivo-info strong { color:#173b6d; font-size:16px; line-height:1.3; overflow-wrap:anywhere; }
+#contenido-alumnos .archivo-info p { margin:0; color:#49617f; font-size:14px !important; line-height:1.35; }
+#contenido-alumnos .boton-descargar { display:inline-flex; align-items:center; justify-content:center; white-space:nowrap; border-radius:8px; background:#dcecff; color:#075fc5 !important; text-decoration:none; padding:10px 14px; font-size:14px; font-weight:800; }
+#contenido-alumnos .boton-descargar:hover { background:#c7e0ff; }
+#contenido-alumnos .detalle-vacio { padding:14px; text-align:center; border:1px solid #d7e5f5; border-radius:9px; color:#526781; font-size:15px; }
+#contenido-alumnos .volver-asignaturas { margin-top:18px; border:1.5px solid #0878ed; color:#075fc5; background:white; border-radius:24px; padding:10px 17px; font-size:15px; font-weight:800; }
+@media(max-width:760px) {
+ #contenido-alumnos .columnas-materiales { grid-template-columns:1fr; }
+ #contenido-alumnos .panel-materiales { padding:16px; }
+ #contenido-alumnos .cabecera-materiales h4 { font-size:20px !important; }
+ #contenido-alumnos .pantalla-asignatura { margin:16px 0; padding:18px 15px; }
+ #contenido-alumnos .detalle-cabecera { align-items:flex-start; gap:12px; }
+ #contenido-alumnos .detalle-icono { width:50px; height:50px; flex-basis:50px; font-size:24px; }
+ #contenido-alumnos .detalle-cabecera h3 { font-size:25px !important; }
+ #contenido-alumnos .detalle-cabecera h4 { font-size:17px !important; }
+ #contenido-alumnos .detalle-cabecera p { font-size:14px !important; }
+ #contenido-alumnos .fila-archivo { grid-template-columns:34px minmax(0,1fr); gap:10px; }
+ #contenido-alumnos .boton-descargar { grid-column:2; justify-self:start; padding:9px 12px; }
+ #contenido-alumnos .archivo-info strong { font-size:15px; }
+ #contenido-alumnos .archivo-info p { font-size:13px !important; }
+}
+</style>
+
 </head>
 <body>
   <header>
@@ -1915,7 +1998,7 @@ function detectarAsignatura(texto) {
 }
 
 function abrirAsignatura(tipo, asignatura, boton) {
-  const nombres = { 'matematicas': 'Matemáticas', 'fisica-quimica': 'Física y Química', 'lengua': 'Lengua', 'dibujo': 'Dibujo' };
+  const nombres = { matematicas: 'Matemáticas', 'fisica-quimica': 'Física y Química', lengua: 'Lengua', dibujo: 'Dibujo' };
   const nombre = nombres[asignatura] || asignatura;
   const etiquetaTipo = tipo === 'apuntes' ? 'Apuntes y documentos' : 'Ejercicios';
   const origen = document.getElementById(`${tipo}-${asignatura}`);
@@ -1923,26 +2006,62 @@ function abrirAsignatura(tipo, asignatura, boton) {
   const columnas = document.querySelector('#contenido-alumnos .columnas-materiales');
   const titulo = document.querySelector('#contenido-alumnos .titulo-materiales');
   const archivos = document.getElementById('detalle-archivos');
+  const banner = document.querySelector('#acceso .zona-banner');
   if (!origen || !pantalla || !columnas || !titulo || !archivos) return;
+
   document.getElementById('ruta-tipo').textContent = etiquetaTipo;
   document.getElementById('ruta-nombre').textContent = nombre;
   document.getElementById('detalle-titulo').textContent = nombre;
   document.getElementById('detalle-subtitulo').textContent = etiquetaTipo;
   document.getElementById('detalle-descripcion').textContent = `Aquí puedes ver todos los ${tipo === 'apuntes' ? 'apuntes y documentos' : 'ejercicios'} de ${nombre}.`;
   document.getElementById('detalle-icono').textContent = asignatura === 'fisica-quimica' ? '⚗' : asignatura === 'lengua' ? '▤' : asignatura === 'dibujo' ? '✎' : '▦';
+
   archivos.replaceChildren();
-  const elementos = Array.from(origen.children);
-  if (!elementos.length) {
-    const vacio = document.createElement('div'); vacio.className = 'detalle-vacio'; vacio.textContent = 'Todavía no hay archivos para esta asignatura.'; archivos.appendChild(vacio);
+  const elementos = Array.from(origen.querySelectorAll('.material-asignatura'));
+  const materialesReales = elementos.filter(el => el.querySelector('a'));
+  if (!materialesReales.length) {
+    const vacio = document.createElement('div');
+    vacio.className = 'detalle-vacio';
+    vacio.textContent = 'Todavía no hay materiales de esta asignatura.';
+    archivos.appendChild(vacio);
   } else {
-    elementos.forEach(el => archivos.appendChild(el.cloneNode(true)));
+    materialesReales.forEach(el => {
+      const enlaceOriginal = el.querySelector('a');
+      const fila = document.createElement('div');
+      fila.className = 'fila-archivo';
+      const icono = document.createElement('div');
+      icono.className = 'archivo-icono';
+      icono.textContent = /\.pdf($|\?)/i.test(enlaceOriginal.href) || /\.pdf/i.test(enlaceOriginal.textContent) ? 'PDF' : 'DOC';
+      const info = document.createElement('div');
+      info.className = 'archivo-info';
+      const nombreArchivo = document.createElement('strong');
+      nombreArchivo.textContent = enlaceOriginal.textContent || 'Abrir material';
+      info.appendChild(nombreArchivo);
+      const descripcionOriginal = el.querySelector('p');
+      if (descripcionOriginal && descripcionOriginal.textContent.trim()) {
+        const descripcion = document.createElement('p');
+        descripcion.textContent = descripcionOriginal.textContent.trim();
+        info.appendChild(descripcion);
+      }
+      const enlace = document.createElement('a');
+      enlace.className = 'boton-descargar';
+      enlace.href = enlaceOriginal.href;
+      enlace.target = '_blank';
+      enlace.rel = 'noopener noreferrer';
+      enlace.textContent = '↓ Descargar';
+      fila.append(icono, info, enlace);
+      archivos.appendChild(fila);
+    });
   }
+
   columnas.hidden = true;
   columnas.style.display = 'none';
   titulo.hidden = true;
   titulo.style.display = 'none';
+  if (banner) banner.style.display = 'none';
   pantalla.hidden = false;
   pantalla.style.display = 'block';
+  document.getElementById('acceso').classList.add('viendo-asignatura');
   window.scrollTo(0, 0);
 }
 
@@ -1953,6 +2072,9 @@ function volverAMisAsignaturas() {
   if (pantalla) { pantalla.hidden = true; pantalla.style.display = 'none'; }
   if (columnas) { columnas.hidden = false; columnas.style.display = ''; }
   if (titulo) { titulo.hidden = false; titulo.style.display = ''; }
+  const banner = document.querySelector('#acceso .zona-banner');
+  if (banner) banner.style.display = '';
+  document.getElementById('acceso')?.classList.remove('viendo-asignatura');
   window.scrollTo(0, 0);
 }
 
