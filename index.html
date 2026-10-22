@@ -1838,26 +1838,36 @@ function alternarAsignatura(tipo, asignatura, boton) {
 }
 
   function mostrarApartado(apartado) {
-  const inicio = document.getElementById("inicio");
-  const acceso = document.getElementById("acceso");
-  const academia = document.getElementById("nuestra-academia");
+  const ids = ["inicio", "nuestra-academia", "acceso"];
 
-  inicio.hidden = true;
-  acceso.hidden = true;
-  academia.hidden = true;
-
-  inicio.style.display = "none";
-  acceso.style.display = "none";
-  academia.style.display = "none";
+  // Ocultar las tres pantallas con prioridad sobre cualquier regla CSS.
+  ids.forEach((id) => {
+    const elemento = document.getElementById(id);
+    if (!elemento) return;
+    elemento.hidden = true;
+    elemento.setAttribute("aria-hidden", "true");
+    elemento.style.setProperty("display", "none", "important");
+  });
 
   const destino = document.getElementById(apartado);
+  if (!destino) return;
 
-  if (destino) {
-    destino.hidden = false;
-    destino.style.display = "block";
-    window.location.hash = apartado;
+  destino.hidden = false;
+  destino.setAttribute("aria-hidden", "false");
+  destino.style.setProperty("display", apartado === "inicio" ? "grid" : "block", "important");
+
+  if (window.location.hash !== "#" + apartado) {
+    history.replaceState(null, "", "#" + apartado);
   }
+  window.scrollTo(0, 0);
 }
+
+// Si se abre directamente un enlace con #nuestra-academia o #acceso,
+// mostrar únicamente esa pantalla.
+document.addEventListener("DOMContentLoaded", () => {
+  const apartado = window.location.hash.replace("#", "");
+  mostrarApartado(["inicio", "nuestra-academia", "acceso"].includes(apartado) ? apartado : "inicio");
+});
 </script>
 </body>
 </html>
