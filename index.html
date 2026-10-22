@@ -881,6 +881,27 @@ header nav a {
   .panel-materiales { padding: 16px; }
 }
 
+
+/* Pantallas de asignatura inspiradas en la maqueta aprobada */
+.pantalla-asignatura { max-width: 900px; margin: 0 auto; padding: 24px; border: 1px solid #e1eaf5; border-radius: 18px; background: rgba(255,255,255,.96); box-shadow: 0 8px 28px rgba(15,45,90,.16); }
+.pantalla-asignatura[hidden] { display:none !important; }
+.ruta-asignatura { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:20px; color:#1769d2; font-size:14px; }
+.ruta-asignatura button { padding:0; border:0; background:transparent; color:#1769d2; font:inherit; cursor:pointer; }
+.cabecera-detalle-asignatura { display:flex; align-items:center; gap:16px; margin-bottom:22px; }
+.icono-detalle-asignatura { display:grid; place-items:center; width:62px; height:62px; flex:0 0 62px; border-radius:14px; background:#0877ed; color:white; font-size:30px; }
+.cabecera-detalle-asignatura h3 { margin:0 0 3px !important; font-size:clamp(25px,3vw,34px) !important; color:#092d68 !important; }
+.cabecera-detalle-asignatura h4 { margin:0 0 4px !important; font-size:18px !important; color:#0877ed !important; }
+.cabecera-detalle-asignatura p { margin:0; color:#456ba8; font-size:14px; }
+.lista-detalle-asignatura { border:1px solid #e1eaf5; border-radius:12px; overflow:hidden; background:white; }
+.fila-detalle-material { display:grid; grid-template-columns:34px minmax(0,1fr) auto; gap:12px; align-items:center; padding:12px 14px; border-bottom:1px solid #e7eef8; }
+.fila-detalle-material:last-child { border-bottom:0; }
+.icono-pdf { font-size:25px; color:#e34141; }
+.info-detalle-material strong { display:block; color:#102f61; font-size:14px; overflow-wrap:anywhere; }
+.info-detalle-material small { display:block; margin-top:3px; color:#617795; }
+.fila-detalle-material a { display:inline-block; padding:9px 13px; border-radius:8px; background:#d8eaff; color:#0756c8 !important; text-decoration:none; font-size:13px; font-weight:800; white-space:nowrap; }
+.boton-volver-asignaturas { margin-top:18px; padding:10px 16px; border:1px solid #1769d2; border-radius:22px; background:white; color:#0756c8; font-weight:700; cursor:pointer; }
+@media(max-width:600px) { .pantalla-asignatura { padding:16px 12px; } .fila-detalle-material { grid-template-columns:28px minmax(0,1fr); gap:9px; padding:12px 10px; } .fila-detalle-material a { grid-column:2; justify-self:start; } .cabecera-detalle-asignatura { align-items:flex-start; } }
+
 </style>
 <style>\n
 /* Ajuste final de la cabecera de Zona de alumnos */
@@ -1608,37 +1629,38 @@ header nav a {
     </div>
 
     <div class="titulo-materiales">
-      <h3>Mis materiales</h3>
-      <p>Aquí encontrarás todos los apuntes, documentos y ejercicios de tu curso.</p>
+      <h3>Mis asignaturas</h3>
+      <p>Selecciona una asignatura en Apuntes y documentos o en Ejercicios.</p>
     </div>
 
-    <div class="columnas-materiales">
-      <article class="panel-materiales">
+    <div id="pantalla-asignatura" class="pantalla-asignatura" hidden></div>
+    <div id="columnas-materiales" class="columnas-materiales">
+      <article id="panel-apuntes" class="panel-materiales">
         <div class="cabecera-materiales">
           <div class="icono-material icono-libro" aria-hidden="true">📘</div>
           <div><h4>Apuntes y documentos</h4><p>Esquemas, resúmenes, temas teóricos y otros documentos de apoyo.</p></div>
         </div>
         <div class="asignaturas-acordeon" aria-label="Apuntes por asignatura">
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="apuntes-matematicas" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica-quimica" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="apuntes-lengua" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('apuntes','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="apuntes-dibujo" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('apuntes','matematicas')">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="apuntes-matematicas" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('apuntes','fisica-quimica')">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('apuntes','lengua')">Lengua <span>＋</span></button><div class="contenido-asignatura" id="apuntes-lengua" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('apuntes','dibujo')">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="apuntes-dibujo" hidden></div></div>
         </div>
         <div id="lista-documentos" class="lista-materiales" hidden></div>
         <p id="sin-materiales-documentos" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
         <p class="enlace-ver-todos">▤ <span>Todos los apuntes y documentos</span></p>
       </article>
 
-      <article class="panel-materiales">
+      <article id="panel-ejercicios" class="panel-materiales">
         <div class="cabecera-materiales">
           <div class="icono-material icono-lapiz" aria-hidden="true">✏️</div>
           <div><h4>Ejercicios</h4><p>Actividades de práctica para afianzar los conocimientos.</p></div>
         </div>
         <div class="asignaturas-acordeon" aria-label="Ejercicios por asignatura">
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-matematicas" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica-quimica" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-lengua" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="alternarAsignatura('ejercicios','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-dibujo" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('ejercicios','matematicas')">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-matematicas" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('ejercicios','fisica-quimica')">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('ejercicios','lengua')">Lengua <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-lengua" hidden></div></div>
+          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirPantallaAsignatura('ejercicios','dibujo')">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-dibujo" hidden></div></div>
         </div>
         <div id="lista-ejercicios" class="lista-materiales" hidden></div>
         <p id="sin-materiales-ejercicios" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
@@ -1876,14 +1898,76 @@ function detectarAsignatura(texto) {
   return "sin-asignatura";
 }
 
-function alternarAsignatura(tipo, asignatura, boton) {
+const nombresAsignaturas = {
+  "matematicas": "Matemáticas",
+  "fisica-quimica": "Física y Química",
+  "lengua": "Lengua",
+  "dibujo": "Dibujo"
+};
+
+function abrirPantallaAsignatura(tipo, asignatura) {
   const zona = document.getElementById(`${tipo}-${asignatura}`);
-  if (!zona || !boton) return;
-  const abierto = boton.getAttribute("aria-expanded") === "true";
-  boton.setAttribute("aria-expanded", abierto ? "false" : "true");
-  zona.hidden = abierto;
-  const simbolo = boton.querySelector("span");
-  if (simbolo) simbolo.textContent = abierto ? "＋" : "−";
+  const columnas = document.getElementById("columnas-materiales");
+  const pantalla = document.getElementById("pantalla-asignatura");
+  if (!zona || !columnas || !pantalla) return;
+
+  const nombre = nombresAsignaturas[asignatura] || asignatura;
+  const tipoNombre = tipo === "apuntes" ? "Apuntes y documentos" : "Ejercicios";
+  const icono = asignatura === "matematicas" ? "▦" : asignatura === "fisica-quimica" ? "⚗" : asignatura === "lengua" ? "▤" : "◉";
+  pantalla.replaceChildren();
+
+  const ruta = document.createElement("div");
+  ruta.className = "ruta-asignatura";
+  const inicioRuta = document.createElement("button");
+  inicioRuta.type = "button";
+  inicioRuta.textContent = "⌂  Mis asignaturas";
+  inicioRuta.onclick = volverAMisAsignaturas;
+  const separador1 = document.createElement("span"); separador1.textContent = "›";
+  const seccionRuta = document.createElement("span"); seccionRuta.textContent = tipoNombre;
+  const separador2 = document.createElement("span"); separador2.textContent = "›";
+  const asignaturaRuta = document.createElement("strong"); asignaturaRuta.textContent = nombre;
+  ruta.append(inicioRuta, separador1, seccionRuta, separador2, asignaturaRuta);
+
+  const cabecera = document.createElement("div"); cabecera.className = "cabecera-detalle-asignatura";
+  const iconoCaja = document.createElement("div"); iconoCaja.className = "icono-detalle-asignatura"; iconoCaja.textContent = icono;
+  const textos = document.createElement("div");
+  const titulo = document.createElement("h3"); titulo.textContent = nombre;
+  const subtitulo = document.createElement("h4"); subtitulo.textContent = tipoNombre;
+  const descripcion = document.createElement("p"); descripcion.textContent = `Aquí puedes ver todos los ${tipo === "apuntes" ? "apuntes y documentos" : "ejercicios"} de ${nombre}.`;
+  textos.append(titulo, subtitulo, descripcion); cabecera.append(iconoCaja, textos);
+
+  const lista = document.createElement("div"); lista.className = "lista-detalle-asignatura";
+  const materiales = Array.from(zona.querySelectorAll(".material-asignatura"));
+  if (!materiales.length) {
+    const aviso = document.createElement("p"); aviso.className = "sin-materiales"; aviso.textContent = "Todavía no hay archivos de esta asignatura."; lista.appendChild(aviso);
+  } else {
+    materiales.forEach((material, index) => {
+      const fila = document.createElement("div"); fila.className = "fila-detalle-material";
+      const iconoPdf = document.createElement("span"); iconoPdf.className = "icono-pdf"; iconoPdf.textContent = "▣";
+      const info = document.createElement("div"); info.className = "info-detalle-material";
+      const original = material.querySelector("a");
+      const nombreArchivo = document.createElement("strong"); nombreArchivo.textContent = original ? original.textContent : `Archivo ${index + 1}`;
+      const detalle = document.createElement("small"); detalle.textContent = material.querySelector("p")?.textContent || (tipo === "apuntes" ? "Documento de apoyo" : "Ejercicio práctico");
+      info.append(nombreArchivo, detalle);
+      const enlace = document.createElement("a");
+      if (original) { enlace.href = original.href; enlace.target = "_blank"; enlace.rel = "noopener noreferrer"; }
+      else { enlace.href = "#"; }
+      enlace.textContent = "↓  Descargar";
+      fila.append(iconoPdf, info, enlace); lista.appendChild(fila);
+    });
+  }
+  const volver = document.createElement("button"); volver.type = "button"; volver.className = "boton-volver-asignaturas"; volver.textContent = "←  Volver a Mis asignaturas"; volver.onclick = volverAMisAsignaturas;
+  pantalla.append(ruta, cabecera, lista, volver);
+  columnas.hidden = true;
+  pantalla.hidden = false;
+  document.getElementById("contenido-alumnos").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function volverAMisAsignaturas() {
+  const columnas = document.getElementById("columnas-materiales");
+  const pantalla = document.getElementById("pantalla-asignatura");
+  if (columnas) columnas.hidden = false;
+  if (pantalla) { pantalla.hidden = true; pantalla.replaceChildren(); }
 }
 
   function mostrarApartado(apartado) {
