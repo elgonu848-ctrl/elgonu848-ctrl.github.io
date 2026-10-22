@@ -1491,135 +1491,38 @@ header nav a {
 </style>
 
 
-<style id="diseno-final-nuestra-academia">
-/* Pantalla independiente de Nuestra academia, inspirada en el diseño acordado */
-#nuestra-academia {
-  box-sizing: border-box !important;
-  width: 100% !important;
-  max-width: none !important;
-  min-height: calc(100vh - 112px) !important;
-  margin: 0 !important;
-  padding: 48px 24px !important;
-  border-radius: 0 !important;
-  display: block;
-  background-image: linear-gradient(rgba(35, 111, 190, .34), rgba(20, 83, 157, .34)), url('/799c252b-39c3-467c-8250-bcc3ab8445c5.png') !important;
-  background-size: cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-  align-content: center;
+<style id="mejora-legibilidad-nuestra-academia">
+/* Aumentar la legibilidad de los textos de «Nuestra academia» */
+#nuestra-academia .academia-presentacion p {
+  font-size: 22px !important;
+  line-height: 1.75 !important;
+  margin-bottom: 22px !important;
 }
-body:has(#nuestra-academia:not([hidden])) header,
-body:has(#nuestra-academia:not([hidden])) footer {
-  background: #062b5c !important;
-  color: #fff !important;
+#nuestra-academia .academia-presentacion h2 {
+  font-size: 42px !important;
+  line-height: 1.2 !important;
 }
-body:has(#nuestra-academia:not([hidden])) header {
-  min-height: 64px;
+#nuestra-academia .academia-presentacion h3 {
+  font-size: 28px !important;
+  line-height: 1.35 !important;
 }
-body:has(#nuestra-academia:not([hidden])) header h1 {
-  color: #fff !important;
+#nuestra-academia .academia-presentacion button {
+  font-size: 19px !important;
 }
-body:has(#nuestra-academia:not([hidden])) header nav a {
-  color: #fff !important;
-}
-#nuestra-academia .academia-presentacion {
-  box-sizing: border-box !important;
-  width: min(840px, 100%) !important;
-  max-width: 840px !important;
-  margin: 0 auto !important;
-  padding: 32px 58px 34px !important;
-  border: 1px solid rgba(255,255,255,.85) !important;
-  border-radius: 30px !important;
-  background: rgba(255,255,255,.94) !important;
-  box-shadow: 0 20px 55px rgba(4,35,79,.22) !important;
-  text-align: center !important;
-  backdrop-filter: blur(8px);
-}
-#nuestra-academia .academia-etiqueta {
-  margin: 0 0 8px !important;
-  color: #173c76 !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  letter-spacing: 3px !important;
-}
-#nuestra-academia .academia-linea {
-  display: block;
-  width: 155px;
-  height: 3px;
-  margin: 0 auto 18px;
-  border-radius: 10px;
-  background: linear-gradient(90deg, #d9ecff, #56aaff, #d9ecff);
-}
-#nuestra-academia h2 {
-  margin: 0 0 10px !important;
-  color: #092d60 !important;
-  font-size: clamp(34px, 4vw, 48px) !important;
-  line-height: 1.15 !important;
-  font-weight: 800 !important;
-}
-#nuestra-academia h3 {
-  margin: 0 0 28px !important;
-  color: #1476ef !important;
-  font-size: clamp(21px, 2.5vw, 29px) !important;
-  line-height: 1.3 !important;
-  font-weight: 750 !important;
-}
-#nuestra-academia .academia-puntos {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 680px;
-  margin: 0 auto;
-  text-align: left;
-}
-#nuestra-academia .academia-punto {
-  display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
-  gap: 22px;
-  align-items: center;
-}
-#nuestra-academia .academia-icono {
-  width: 72px;
-  height: 72px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #e1efff;
-  color: #073c88;
-  font-size: 36px;
-  font-weight: 700;
-}
-#nuestra-academia .academia-punto p {
-  margin: 0 !important;
-  color: #102f5f !important;
-  font-size: 17px !important;
-  line-height: 1.55 !important;
-}
-#nuestra-academia .academia-boton-inicio {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 26px !important;
-  padding: 15px 30px !important;
-  border: 0 !important;
-  border-radius: 22px !important;
-  background: linear-gradient(110deg, #138aff, #0058f5) !important;
-  color: white !important;
-  font-size: 17px !important;
-  font-weight: 750 !important;
-  box-shadow: 0 10px 22px rgba(0,92,235,.28) !important;
-  cursor: pointer;
-}
-#nuestra-academia .academia-boton-inicio span { font-size: 25px; line-height: 1; }
-#nuestra-academia .academia-boton-inicio:hover { transform: translateY(-1px); }
-@media (max-width: 650px) {
-  #nuestra-academia { padding: 24px 12px !important; min-height: calc(100vh - 100px) !important; }
-  #nuestra-academia .academia-presentacion { padding: 28px 20px !important; border-radius: 22px !important; }
-  #nuestra-academia .academia-punto { grid-template-columns: 52px minmax(0, 1fr); gap: 13px; }
-  #nuestra-academia .academia-icono { width: 50px; height: 50px; font-size: 27px; }
-  #nuestra-academia .academia-punto p { font-size: 15px !important; }
-  #nuestra-academia h3 { margin-bottom: 22px !important; }
+@media (max-width: 700px) {
+  #nuestra-academia .academia-presentacion {
+    padding: 25px 20px !important;
+  }
+  #nuestra-academia .academia-presentacion p {
+    font-size: 18px !important;
+    line-height: 1.65 !important;
+  }
+  #nuestra-academia .academia-presentacion h2 {
+    font-size: 32px !important;
+  }
+  #nuestra-academia .academia-presentacion h3 {
+    font-size: 23px !important;
+  }
 }
 </style>
 
@@ -1744,30 +1647,32 @@ body:has(#nuestra-academia:not([hidden])) header nav a {
     </div>
   </div>
 </section>
-   <section id="nuestra-academia" hidden aria-label="Nuestra academia">
+   <section id="nuestra-academia" hidden>
   <div class="academia-presentacion">
-    <p class="academia-etiqueta">ACADEMIA ORIHUELA CENTRO</p>
-    <span class="academia-linea" aria-hidden="true"></span>
+    <p>ACADEMIA ORIHUELA CENTRO</p>
     <h2>Nuestra academia</h2>
     <h3>Aprender es avanzar, paso a paso.</h3>
 
-    <div class="academia-puntos">
-      <div class="academia-punto">
-        <span class="academia-icono" aria-hidden="true">♧</span>
-        <p>Creemos que cada alumno puede alcanzar sus objetivos con el acompañamiento adecuado, una buena planificación y esfuerzo.</p>
-      </div>
-      <div class="academia-punto">
-        <span class="academia-icono" aria-hidden="true">▤</span>
-        <p>Nuestro objetivo es ayudarte a comprender los contenidos, resolver tus dudas y ganar confianza y autonomía en el aprendizaje.</p>
-      </div>
-      <div class="academia-punto">
-        <span class="academia-icono" aria-hidden="true">☆</span>
-        <p>Ofrecemos un apoyo educativo cercano, organizado y adaptado a las necesidades de cada alumno.</p>
-      </div>
-    </div>
+    <p>
+      Creemos que cada alumno puede alcanzar sus objetivos
+      con el acompañamiento adecuado, una buena planificación
+      y esfuerzo.
+    </p>
 
-    <button class="academia-boton-inicio" type="button" onclick="mostrarApartado('inicio')">
-      <span aria-hidden="true">⌂</span> Volver al inicio
+    <p>
+      Nuestro objetivo es ayudarte a comprender los contenidos,
+      resolver tus dudas y ganar confianza y autonomía
+      en el aprendizaje.
+    </p>
+
+    <p>
+      Ofrecemos un apoyo educativo cercano, organizado
+      y adaptado a las necesidades de cada alumno.
+    </p>
+
+    <button class="button" type="button"
+      onclick="mostrarApartado('inicio')">
+      Volver al inicio
     </button>
   </div>
 </section>
