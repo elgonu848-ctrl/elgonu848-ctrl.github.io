@@ -1932,26 +1932,39 @@ function alternarAsignatura(tipo, asignatura, boton) {
 }
 
   function mostrarApartado(apartado) {
-  const inicio = document.getElementById("inicio");
-  const acceso = document.getElementById("acceso");
-  const academia = document.getElementById("nuestra-academia");
+  const apartados = ["inicio", "nuestra-academia", "acceso"];
 
-  inicio.hidden = true;
-  acceso.hidden = true;
-  academia.hidden = true;
-
-  inicio.style.display = "none";
-  acceso.style.display = "none";
-  academia.style.display = "none";
+  // Oculta por completo todas las pantallas antes de mostrar la elegida.
+  apartados.forEach((id) => {
+    const elemento = document.getElementById(id);
+    if (!elemento) return;
+    elemento.hidden = true;
+    elemento.style.setProperty("display", "none", "important");
+    elemento.setAttribute("aria-hidden", "true");
+  });
 
   const destino = document.getElementById(apartado);
+  if (!destino) return;
 
-  if (destino) {
-    destino.hidden = false;
-    destino.style.display = "block";
-    window.location.hash = apartado;
+  destino.hidden = false;
+  destino.style.removeProperty("display");
+  destino.style.setProperty("display", "block", "important");
+  destino.setAttribute("aria-hidden", "false");
+
+  // Cada opción funciona como una pantalla independiente, no como una sección
+  // situada debajo de la portada. La URL también refleja la pantalla activa.
+  if (window.location.hash !== "#" + apartado) {
+    history.replaceState(null, "", "#" + apartado);
   }
+  window.scrollTo({ top: 0, behavior: "auto" });
 }
+
+// Al abrir o actualizar la web, mostrar solo la pantalla indicada en la URL.
+window.addEventListener("DOMContentLoaded", () => {
+  const solicitada = window.location.hash.replace("#", "");
+  const valida = ["inicio", "nuestra-academia", "acceso"].includes(solicitada);
+  mostrarApartado(valida ? solicitada : "inicio");
+});
 </script>
 </body>
 </html>
