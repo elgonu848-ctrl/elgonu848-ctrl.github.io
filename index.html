@@ -1477,100 +1477,6 @@ header nav a {
 }
 </style>
 
-
-<style id="mejora-nuestra-academia">
-/* Rediseño de la sección Nuestra academia: más clara, moderna y legible */
-#nuestra-academia:not([hidden]) {
-  position: relative !important;
-  width: min(1180px, calc(100% - 40px)) !important;
-  min-height: 500px !important;
-  margin: 34px auto 42px !important;
-  padding: 34px !important;
-  overflow: hidden !important;
-  border-radius: 28px !important;
-  background:
-    linear-gradient(115deg, rgba(239,247,255,.94) 0%, rgba(229,241,255,.84) 48%, rgba(213,232,252,.70) 100%),
-    url('/799c252b-39c3-467c-8250-bcc3ab8445c5.png') center / cover no-repeat !important;
-  box-shadow: 0 16px 42px rgba(18, 62, 112, .12) !important;
-}
-#nuestra-academia .academia-presentacion {
-  position: relative !important;
-  max-width: 880px !important;
-  margin: 0 auto !important;
-  padding: clamp(28px, 5vw, 54px) clamp(24px, 5vw, 62px) !important;
-  background: rgba(255,255,255,.96) !important;
-  border: 1px solid rgba(199,220,245,.95) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 14px 36px rgba(21, 63, 112, .13) !important;
-  text-align: center !important;
-}
-#nuestra-academia .academia-presentacion > p:first-child {
-  display: inline-block !important;
-  margin: 0 0 8px !important;
-  padding: 8px 13px !important;
-  color: #1769aa !important;
-  background: #e8f3ff !important;
-  border-radius: 999px !important;
-  font-size: 12px !important;
-  font-weight: 800 !important;
-  letter-spacing: 1.7px !important;
-}
-#nuestra-academia h2 {
-  color: #103766 !important;
-  font-size: clamp(32px, 4vw, 44px) !important;
-  line-height: 1.15 !important;
-  margin: 12px 0 14px !important;
-  font-weight: 800 !important;
-}
-#nuestra-academia h3 {
-  color: #087fe5 !important;
-  font-size: clamp(21px, 2.5vw, 28px) !important;
-  line-height: 1.35 !important;
-  margin: 0 0 24px !important;
-  font-weight: 750 !important;
-}
-#nuestra-academia .academia-presentacion p:not(:first-child) {
-  max-width: 700px !important;
-  margin: 0 auto 15px !important;
-  color: #425a77 !important;
-  font-size: clamp(16px, 1.5vw, 18px) !important;
-  line-height: 1.75 !important;
-}
-#nuestra-academia .academia-presentacion button {
-  margin-top: 12px !important;
-  min-height: 48px !important;
-  padding: 13px 25px !important;
-  border: 0 !important;
-  border-radius: 12px !important;
-  background: linear-gradient(135deg, #087fe5, #0758b5) !important;
-  color: #fff !important;
-  font-size: 16px !important;
-  font-weight: 750 !important;
-  box-shadow: 0 7px 18px rgba(8, 101, 198, .22) !important;
-  cursor: pointer !important;
-}
-#nuestra-academia .academia-presentacion button:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 22px rgba(8, 101, 198, .28) !important;
-}
-@media (max-width: 640px) {
-  #nuestra-academia:not([hidden]) {
-    width: calc(100% - 20px) !important;
-    min-height: 0 !important;
-    margin: 14px auto 26px !important;
-    padding: 12px !important;
-    border-radius: 20px !important;
-  }
-  #nuestra-academia .academia-presentacion {
-    padding: 28px 20px !important;
-    border-radius: 17px !important;
-  }
-  #nuestra-academia .academia-presentacion p:not(:first-child) {
-    line-height: 1.65 !important;
-  }
-}
-</style>
-
 </head>
 <body>
   <header>
@@ -1932,39 +1838,26 @@ function alternarAsignatura(tipo, asignatura, boton) {
 }
 
   function mostrarApartado(apartado) {
-  const apartados = ["inicio", "nuestra-academia", "acceso"];
+  const inicio = document.getElementById("inicio");
+  const acceso = document.getElementById("acceso");
+  const academia = document.getElementById("nuestra-academia");
 
-  // Oculta por completo todas las pantallas antes de mostrar la elegida.
-  apartados.forEach((id) => {
-    const elemento = document.getElementById(id);
-    if (!elemento) return;
-    elemento.hidden = true;
-    elemento.style.setProperty("display", "none", "important");
-    elemento.setAttribute("aria-hidden", "true");
-  });
+  inicio.hidden = true;
+  acceso.hidden = true;
+  academia.hidden = true;
+
+  inicio.style.display = "none";
+  acceso.style.display = "none";
+  academia.style.display = "none";
 
   const destino = document.getElementById(apartado);
-  if (!destino) return;
 
-  destino.hidden = false;
-  destino.style.removeProperty("display");
-  destino.style.setProperty("display", "block", "important");
-  destino.setAttribute("aria-hidden", "false");
-
-  // Cada opción funciona como una pantalla independiente, no como una sección
-  // situada debajo de la portada. La URL también refleja la pantalla activa.
-  if (window.location.hash !== "#" + apartado) {
-    history.replaceState(null, "", "#" + apartado);
+  if (destino) {
+    destino.hidden = false;
+    destino.style.display = "block";
+    window.location.hash = apartado;
   }
-  window.scrollTo({ top: 0, behavior: "auto" });
 }
-
-// Al abrir o actualizar la web, mostrar solo la pantalla indicada en la URL.
-window.addEventListener("DOMContentLoaded", () => {
-  const solicitada = window.location.hash.replace("#", "");
-  const valida = ["inicio", "nuestra-academia", "acceso"].includes(solicitada);
-  mostrarApartado(valida ? solicitada : "inicio");
-});
 </script>
 </body>
 </html>
