@@ -1899,7 +1899,7 @@ async function cargarMateriales(cursoAlumno) {
 
   const { data, error } = await supabaseClient
     .from("materiales")
-    .select("id, titulo, descripcion, tipo, url, curso, cursos")
+    .select("id, titulo, descripcion, tipo, url, curso, cursos, asignatura")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -1922,7 +1922,9 @@ async function cargarMateriales(cursoAlumno) {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
     if (!tipos.includes(tipo)) return;
-    const asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
+    // La asignatura explícita de Supabase tiene prioridad. Solo usamos la detección
+    // por título/descripción como compatibilidad para materiales antiguos sin asignatura.
+    const asignatura = normalizarAsignatura(material.asignatura) || detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
     if (!asignaturas.includes(asignatura)) return;
     const zona = document.getElementById(`${tipo}-${asignatura}`);
     if (!zona) return;
@@ -1957,6 +1959,21 @@ async function cargarMateriales(cursoAlumno) {
 
 function normalizarCurso(curso) {
   return (curso || "").toString().trim().toLocaleLowerCase("es").replace(/\s+/g, " ");
+}
+
+function normalizarAsignatura(asignatura) {
+  const t = (asignatura || "").toString().trim().toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ");
+  const equivalencias = {
+    "matematicas": "matematicas",
+    "fisica y quimica": "fisica-quimica",
+    "fisica-quimica": "fisica-quimica",
+    "fisicoquimica": "fisica-quimica",
+    "lengua": "lengua",
+    "lengua castellana": "lengua",
+    "dibujo": "dibujo",
+    "dibujo tecnico": "dibujo"
+  };
+  return equivalencias[t] || "";
 }
 
 function detectarAsignatura(texto) {
