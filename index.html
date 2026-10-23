@@ -1962,8 +1962,16 @@ function abrirAsignatura(tipo, asignatura, boton) {
   const pantalla = document.getElementById('pantalla-asignatura');
   const columnas = document.querySelector('#contenido-alumnos .columnas-materiales');
   const titulo = document.querySelector('#contenido-alumnos .titulo-materiales');
+  const banner = document.querySelector('#acceso .zona-banner');
   const archivos = document.getElementById('detalle-archivos');
   if (!origen || !pantalla || !columnas || !titulo || !archivos) return;
+
+  // En la pantalla individual de una asignatura ocultamos el banner grande
+  // para dejar más espacio vertical a la lista de documentos.
+  if (banner) {
+    banner.hidden = true;
+    banner.style.setProperty('display', 'none', 'important');
+  }
 
   document.getElementById('ruta-tipo').textContent = etiquetaTipo;
   document.getElementById('ruta-nombre').textContent = nombre;
@@ -2041,6 +2049,11 @@ function volverAMisAsignaturas() {
   const pantalla = document.getElementById('pantalla-asignatura');
   const columnas = document.querySelector('#contenido-alumnos .columnas-materiales');
   const titulo = document.querySelector('#contenido-alumnos .titulo-materiales');
+  const banner = document.querySelector('#acceso .zona-banner');
+  if (banner) {
+    banner.hidden = false;
+    banner.style.removeProperty('display');
+  }
   if (pantalla) { pantalla.hidden = true; pantalla.style.display = 'none'; }
   if (columnas) { columnas.hidden = false; columnas.style.display = ''; }
   if (titulo) { titulo.hidden = false; titulo.style.display = ''; }
