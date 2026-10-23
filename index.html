@@ -1899,8 +1899,7 @@ async function cargarMateriales(cursoAlumno) {
 
   const { data, error } = await supabaseClient
     .from("materiales")
-    .select("id, titulo, descripcion, tipo, url, curso")
-    .eq("curso", cursoAlumno)
+    .select("id, titulo, descripcion, tipo, url, curso, cursos")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -1908,7 +1907,18 @@ async function cargarMateriales(cursoAlumno) {
     return;
   }
 
-  data.forEach(material => {
+  // Un material puede asignarse a varios cursos mediante la columna cursos (array).
+  // Se mantiene compatibilidad con los registros antiguos que solo usan curso (texto).
+  const cursoNormalizado = normalizarCurso(cursoAlumno);
+  const materialesDelCurso = (data || []).filter(material => {
+    const cursosAsignados = Array.isArray(material.cursos) ? material.cursos : [];
+    const coincideArray = cursosAsignados.some(curso => normalizarCurso(curso) === cursoNormalizado);
+    const coincideCursoAntiguo = normalizarCurso(material.curso) === cursoNormalizado;
+    const asignadoATodos = cursosAsignados.some(curso => normalizarCurso(curso) === "todos") || normalizarCurso(material.curso) === "todos";
+    return coincideArray || coincideCursoAntiguo || asignadoATodos;
+  });
+
+  materialesDelCurso.forEach(material => {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
     if (!tipos.includes(tipo)) return;
@@ -1943,6 +1953,10 @@ async function cargarMateriales(cursoAlumno) {
       zona.appendChild(aviso);
     }
   }));
+}
+
+function normalizarCurso(curso) {
+  return (curso || "").toString().trim().toLocaleLowerCase("es").replace(/\s+/g, " ");
 }
 
 function detectarAsignatura(texto) {
