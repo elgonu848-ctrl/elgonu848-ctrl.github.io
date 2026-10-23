@@ -1963,7 +1963,7 @@ function detectarAsignatura(texto) {
   const t = (texto || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   if (/\b(matematicas?|algebra|ecuaciones?|fracciones?|aritmetica|calculo|porcentajes?|numeros?)\b/.test(t)) return "matematicas";
   if (/\b(fisica|quimica|fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
-  if (/\b(lengua|gramatica|sintaxis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?)\b/.test(t)) return "lengua";
+  if (/\b(lengua|gramatica|sintaxis|sintactic[oa]s?|analisis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?)\b/.test(t)) return "lengua";
   if (/\b(dibujo|geometria|dibujo tecnico|perspectiva|laminas?|trazados?)\b/.test(t)) return "dibujo";
   return "sin-asignatura";
 }
