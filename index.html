@@ -673,11 +673,13 @@ header nav a {
 #acceso .zona-banner h2 { margin: 0 0 8px; font-size: clamp(30px, 4vw, 46px); color: #102f61; }
 #acceso .zona-banner p { margin: 0; font-size: 18px; color: #17365d; }
 #acceso .panel-login { max-width: 520px; margin: 30px auto; padding: 30px; border-radius: 18px; background: white; box-shadow: 0 5px 22px rgba(23,54,93,.10); }
-#form-login { display: grid; gap: 10px; text-align: left; }
-#form-login label { font-weight: 700; color: #17365d; }
-#form-login input { width: 100%; padding: 12px 14px; border: 1px solid #c8d8eb; border-radius: 9px; font: inherit; }
-#form-login button { margin-top: 8px; padding: 13px 18px; border: 0; border-radius: 10px; background: #1769d2; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
-#mensaje-login { overflow-wrap: anywhere; }
+#form-login, #form-registro { display: grid; gap: 10px; text-align: left; }
+#form-login label, #form-registro label { font-weight: 700; color: #17365d; }
+#form-login input, #form-registro input, #form-registro select { width: 100%; padding: 12px 14px; border: 1px solid #c8d8eb; border-radius: 9px; font: inherit; box-sizing: border-box; }
+#form-login button, #form-registro button { margin-top: 8px; padding: 13px 18px; border: 0; border-radius: 10px; background: #1769d2; color: white; font-size: 16px; font-weight: 700; cursor: pointer; }
+#mensaje-login, #mensaje-registro { overflow-wrap: anywhere; }
+.boton-cambiar-formulario { margin-top: 12px; padding: 0; border: 0; background: transparent; color: #1769d2; font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
+.texto-ayuda-registro { color: #53647b; font-size: 14px; line-height: 1.5; }
 #contenido-alumnos { margin-top: 0; padding: 0; background: transparent; box-shadow: none; }
 #contenido-alumnos .bienvenida-alumno { display: flex; align-items: center; gap: 16px; padding: 18px 24px; margin: 0 0 28px; background: #fff; border: 1px solid #e1eaf5; border-radius: 18px; box-shadow: 0 4px 16px rgba(23,54,93,.07); }
 .avatar-alumno { display: grid; place-items: center; flex: 0 0 68px; width: 68px; height: 68px; border-radius: 50%; background: #dcecff; font-size: 34px; }
@@ -1656,8 +1658,33 @@ header nav a {
       <label for="password-alumno">Contraseña</label>
       <input type="password" id="password-alumno" placeholder="Tu contraseña" autocomplete="current-password" required>
       <button type="submit">Entrar</button>
-      <p id="mensaje-login" role="status"></p>
+      <p id="mensaje-login" role="status" aria-live="polite"></p>
     </form>
+    <button id="mostrar-registro" class="boton-cambiar-formulario" type="button">¿No tienes cuenta? Regístrate aquí</button>
+
+    <div id="panel-registro" hidden style="display:none; margin-top:24px; padding-top:22px; border-top:1px solid #e1eaf5;">
+      <h3>Crear cuenta de alumno</h3>
+      <p class="texto-ayuda-registro">Rellena tus datos. La academia revisará tu solicitud antes de darte acceso a los materiales.</p>
+      <form id="form-registro">
+        <label for="registro-nombre">Nombre</label>
+        <input type="text" id="registro-nombre" autocomplete="given-name" required maxlength="100">
+        <label for="registro-apellidos">Apellidos</label>
+        <input type="text" id="registro-apellidos" autocomplete="family-name" required maxlength="150">
+        <label for="registro-email">Correo electrónico</label>
+        <input type="email" id="registro-email" autocomplete="email" required>
+        <label for="registro-telefono">Teléfono (opcional)</label>
+        <input type="tel" id="registro-telefono" autocomplete="tel" maxlength="30">
+        <label for="registro-curso">Curso</label>
+        <input type="text" id="registro-curso" placeholder="Ej.: 2 ESO" required maxlength="100">
+        <label for="registro-password">Contraseña (mínimo 8 caracteres)</label>
+        <input type="password" id="registro-password" autocomplete="new-password" minlength="8" required>
+        <label for="registro-password-confirmacion">Repite la contraseña</label>
+        <input type="password" id="registro-password-confirmacion" autocomplete="new-password" minlength="8" required>
+        <button type="submit">Solicitar registro</button>
+        <p id="mensaje-registro" role="status" aria-live="polite"></p>
+      </form>
+      <button id="volver-login" class="boton-cambiar-formulario" type="button">Ya tengo cuenta: volver al inicio de sesión</button>
+    </div>
   </div>
 
   <div id="contenido-alumnos" hidden>
@@ -1771,119 +1798,170 @@ header nav a {
   );
 
   const formulario = document.getElementById("form-login");
+  const formularioRegistro = document.getElementById("form-registro");
   const zonaLogin = document.getElementById("login-alumnos");
   const contenido = document.getElementById("contenido-alumnos");
   const mensaje = document.getElementById("mensaje-login");
+  const mensajeRegistro = document.getElementById("mensaje-registro");
   const botonCerrar = document.getElementById("cerrar-sesion");
+  const panelRegistro = document.getElementById("panel-registro");
+  const botonMostrarRegistro = document.getElementById("mostrar-registro");
+  const botonVolverLogin = document.getElementById("volver-login");
 
   function mostrarZonaPrivada(autenticado) {
-  if (zonaLogin) {
-    zonaLogin.style.display = autenticado ? 'none' : 'block';
+    if (zonaLogin) zonaLogin.style.display = autenticado ? 'none' : 'block';
+    if (contenido) contenido.style.display = autenticado ? 'block' : 'none';
   }
 
-  if (contenido) {
-    contenido.style.display = autenticado ? 'block' : 'none';
+  function mostrarFormularioRegistro(mostrar) {
+    if (panelRegistro) {
+      panelRegistro.hidden = !mostrar;
+      panelRegistro.style.display = mostrar ? 'block' : 'none';
+    }
+    if (formulario) formulario.style.display = mostrar ? 'none' : 'grid';
+    if (botonMostrarRegistro) botonMostrarRegistro.style.display = mostrar ? 'none' : 'inline-block';
+    if (mensaje) mensaje.textContent = '';
+    if (mensajeRegistro) mensajeRegistro.textContent = '';
   }
 
-}
+  botonMostrarRegistro?.addEventListener('click', () => mostrarFormularioRegistro(true));
+  botonVolverLogin?.addEventListener('click', () => mostrarFormularioRegistro(false));
 
-  // Mostrar el nombre real del alumno guardado en la tabla alumnos.
   function actualizarBienvenida(nombre) {
     const saludo = document.getElementById("saludo-nombre");
     const nombreLimpio = (nombre || "").trim();
-    if (saludo) {
-      saludo.textContent = nombreLimpio ? `¡Hola, ${nombreLimpio}!` : "¡Hola!";
-    }
+    if (saludo) saludo.textContent = nombreLimpio ? `¡Hola, ${nombreLimpio}!` : "¡Hola!";
   }
 
-  // Ocultar el contenido privado al abrir la página.
   mostrarZonaPrivada(false);
 
-  // Comprobar si el alumno ya tiene una sesión activa.
   async function comprobarSesion() {
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Error al comprobar la sesión:", error);
-    return;
-  }
-
-  const sesion = data.session;
-  mostrarZonaPrivada(Boolean(sesion));
-
-  if (!sesion) return;
-
-  const { data: alumno, error: errorAlumno } = await supabaseClient
-    .from("alumnos")
-    .select("curso, nombre")
-    .eq("user_id", sesion.user.id)
-    .single();
-
-  if (errorAlumno || !alumno) {
-    console.error("Error al obtener el curso:", errorAlumno);
-    return;
-  }
-
-  actualizarBienvenida(alumno.nombre);
-  document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
-  await cargarMateriales(alumno.curso);
-}
-
-  comprobarSesion();
-
-  // Iniciar sesión con correo y contraseña.
-  formulario.addEventListener("submit", async function(evento) {
-    evento.preventDefault();
-
-    mensaje.textContent = "Comprobando datos...";
-
-    const email = document.getElementById("email-alumno").value.trim();
-    const password = document.getElementById("password-alumno").value;
-
-    const { data, error } =
-      await supabaseClient.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
-
+    const { data, error } = await supabaseClient.auth.getSession();
     if (error) {
-    mensaje.textContent =
-        "Error de inicio de sesión: " + error.message;
-    console.error("Error Supabase:", error);
-    return;
-}
-// Buscar el curso asignado al alumno que ha iniciado sesión.
-    const { data: alumno, error: errorAlumno } = await supabaseClient
-      .from("alumnos")
-      .select("curso, nombre")
-      .eq("user_id", data.user.id)
-      .single();
-
-    if (errorAlumno || !alumno) {
-      await supabaseClient.auth.signOut();
-      mensaje.textContent = "No se ha podido encontrar tu curso. Contacta con la academia.";
+      console.error("Error al comprobar la sesión:", error);
+      return;
+    }
+    const sesion = data.session;
+    if (!sesion) {
       mostrarZonaPrivada(false);
       return;
     }
 
-    const cursoAlumno = alumno.curso;
-    actualizarBienvenida(alumno.nombre);
-    document.getElementById("curso-alumno").textContent = cursoAlumno || "Sin curso asignado";
+    const { data: alumno, error: errorAlumno } = await supabaseClient
+      .from("alumnos")
+      .select("curso, nombre, aprobado")
+      .eq("user_id", sesion.user.id)
+      .maybeSingle();
 
-mensaje.textContent = "";
-mostrarZonaPrivada(true);
-cargarMateriales(cursoAlumno);
+    if (errorAlumno || !alumno) {
+      console.error("Error al obtener la ficha del alumno:", errorAlumno);
+      mostrarZonaPrivada(false);
+      return;
+    }
+    if (alumno.aprobado !== true) {
+      await supabaseClient.auth.signOut();
+      mostrarZonaPrivada(false);
+      mensaje.textContent = "Tu cuenta está pendiente de aprobación por parte de la academia. Podrás acceder cuando se apruebe tu solicitud.";
+      return;
+    }
+
+    actualizarBienvenida(alumno.nombre);
+    document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
+    mostrarZonaPrivada(true);
+    await cargarMateriales(alumno.curso);
+  }
+
+  comprobarSesion();
+
+  formulario.addEventListener("submit", async function(evento) {
+    evento.preventDefault();
+    mensaje.textContent = "Comprobando datos...";
+    const email = document.getElementById("email-alumno").value.trim();
+    const password = document.getElementById("password-alumno").value;
+
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) {
+      mensaje.textContent = "No se ha podido iniciar sesión. Comprueba el correo y la contraseña y, si acabas de registrarte, confirma tu correo electrónico.";
+      console.error("Error de inicio de sesión:", error);
+      return;
+    }
+
+    const { data: alumno, error: errorAlumno } = await supabaseClient
+      .from("alumnos")
+      .select("curso, nombre, aprobado")
+      .eq("user_id", data.user.id)
+      .maybeSingle();
+
+    if (errorAlumno || !alumno) {
+      await supabaseClient.auth.signOut();
+      mensaje.textContent = "No se ha encontrado tu ficha de alumno. Contacta con la academia.";
+      mostrarZonaPrivada(false);
+      return;
+    }
+    if (alumno.aprobado !== true) {
+      await supabaseClient.auth.signOut();
+      mensaje.textContent = "Tu cuenta está pendiente de aprobación por parte de la academia. Podrás acceder cuando se apruebe tu solicitud.";
+      mostrarZonaPrivada(false);
+      return;
+    }
+
+    actualizarBienvenida(alumno.nombre);
+    document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
+    mensaje.textContent = "";
+    mostrarZonaPrivada(true);
+    await cargarMateriales(alumno.curso);
   });
 
-  // Cerrar sesión.
+  formularioRegistro.addEventListener("submit", async function(evento) {
+    evento.preventDefault();
+    mensajeRegistro.textContent = "Enviando solicitud...";
+
+    const nombre = document.getElementById("registro-nombre").value.trim();
+    const apellidos = document.getElementById("registro-apellidos").value.trim();
+    const email = document.getElementById("registro-email").value.trim();
+    const telefono = document.getElementById("registro-telefono").value.trim();
+    const curso = document.getElementById("registro-curso").value.trim();
+    const password = document.getElementById("registro-password").value;
+    const confirmacion = document.getElementById("registro-password-confirmacion").value;
+
+    if (password.length < 8) {
+      mensajeRegistro.textContent = "La contraseña debe tener al menos 8 caracteres.";
+      return;
+    }
+    if (password !== confirmacion) {
+      mensajeRegistro.textContent = "Las contraseñas no coinciden.";
+      return;
+    }
+
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { nombre, apellidos, telefono, curso }
+      }
+    });
+
+    if (error) {
+      mensajeRegistro.textContent = "No se ha podido completar el registro. Comprueba los datos e inténtalo de nuevo.";
+      console.error("Error de registro:", error);
+      return;
+    }
+
+    formularioRegistro.reset();
+    if (data.session) {
+      await supabaseClient.auth.signOut();
+    }
+    mostrarFormularioRegistro(false);
+    mensaje.textContent = "Solicitud enviada. Si recibes un correo de confirmación, verifica tu dirección. Tu cuenta quedará pendiente de aprobación por la academia antes de acceder a los materiales.";
+  });
+
   botonCerrar.addEventListener("click", async function() {
     const { error } = await supabaseClient.auth.signOut();
-
     if (error) {
       mensaje.textContent = "No se pudo cerrar la sesión.";
       return;
     }
-
     mostrarZonaPrivada(false);
     volverAMisAsignaturas();
     formulario.reset();
@@ -1899,7 +1977,7 @@ async function cargarMateriales(cursoAlumno) {
 
   const { data, error } = await supabaseClient
     .from("materiales")
-    .select("id, titulo, descripcion, tipo, url, curso, cursos, asignatura")
+    .select("id, titulo, descripcion, tipo, url, curso, cursos")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -1922,9 +2000,7 @@ async function cargarMateriales(cursoAlumno) {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
     if (!tipos.includes(tipo)) return;
-    // La asignatura explícita de Supabase tiene prioridad. Solo usamos la detección
-    // por título/descripción como compatibilidad para materiales antiguos sin asignatura.
-    const asignatura = normalizarAsignatura(material.asignatura) || detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
+    const asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
     if (!asignaturas.includes(asignatura)) return;
     const zona = document.getElementById(`${tipo}-${asignatura}`);
     if (!zona) return;
@@ -1959,21 +2035,6 @@ async function cargarMateriales(cursoAlumno) {
 
 function normalizarCurso(curso) {
   return (curso || "").toString().trim().toLocaleLowerCase("es").replace(/\s+/g, " ");
-}
-
-function normalizarAsignatura(asignatura) {
-  const t = (asignatura || "").toString().trim().toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ");
-  const equivalencias = {
-    "matematicas": "matematicas",
-    "fisica y quimica": "fisica-quimica",
-    "fisica-quimica": "fisica-quimica",
-    "fisicoquimica": "fisica-quimica",
-    "lengua": "lengua",
-    "lengua castellana": "lengua",
-    "dibujo": "dibujo",
-    "dibujo tecnico": "dibujo"
-  };
-  return equivalencias[t] || "";
 }
 
 function detectarAsignatura(texto) {
