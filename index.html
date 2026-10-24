@@ -1854,17 +1854,30 @@ header nav a {
     if (!email) { estado.textContent = "Escribe primero tu correo electrónico en el campo de inicio de sesión."; return; }
     estado.textContent = "Enviando correo...";
     const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + window.location.pathname + "#recuperar-contrasena"
+      // Usar una URL permitida sin fragmento propio: Supabase añade al fragmento
+      // los tokens de recuperación y el evento PASSWORD_RECOVERY los procesa.
+      redirectTo: window.location.origin + window.location.pathname + "?reset=1"
     });
     estado.textContent = error ? "No se pudo enviar el correo. Comprueba la configuración de URL de recuperación en Supabase e inténtalo de nuevo." : "Si el correo está registrado, recibirás un enlace para crear una nueva contraseña. Revisa también spam.";
   });
 
   supabaseClient.auth.onAuthStateChange((event) => {
     if (event === "PASSWORD_RECOVERY") {
-      panelNuevaPassword.hidden = false;
-      panelNuevaPassword.style.display = "block";
-      panelRecuperar.hidden = true;
-      panelRecuperar.style.display = "none";
+      // El enlace de recuperación puede volver a la página principal.
+      // Llevar al usuario a Acceso alumnos y mostrar el formulario de contraseña nueva.
+      mostrarApartado("acceso");
+      mostrarZonaPrivada(false);
+      if (panelNuevaPassword) {
+        panelNuevaPassword.hidden = false;
+        panelNuevaPassword.style.display = "block";
+      }
+      if (panelRecuperar) {
+        panelRecuperar.hidden = true;
+        panelRecuperar.style.display = "none";
+      }
+      if (formulario) formulario.style.display = "none";
+      if (botonMostrarRegistro) botonMostrarRegistro.style.display = "none";
+      if (mensaje) mensaje.textContent = "";
     }
   });
 
