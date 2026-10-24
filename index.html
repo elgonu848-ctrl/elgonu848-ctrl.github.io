@@ -1660,6 +1660,19 @@ header nav a {
       <button type="submit">Entrar</button>
       <p id="mensaje-login" role="status" aria-live="polite"></p>
     </form>
+    <button id="recuperar-password" class="boton-cambiar-formulario" type="button">¿Has olvidado tu contraseña?</button>
+    <div id="panel-recuperar-password" hidden style="display:none; margin-top:18px;">
+      <p>Introduce tu correo electrónico y te enviaremos un enlace para recuperar la contraseña.</p>
+      <button id="enviar-recuperacion" type="button">Enviar enlace de recuperación</button>
+      <p id="mensaje-recuperacion" role="status" aria-live="polite"></p>
+    </div>
+    <div id="panel-nueva-password" hidden style="display:none; margin-top:18px;">
+      <h3>Crear nueva contraseña</h3>
+      <label for="nueva-password">Nueva contraseña (mínimo 8 caracteres)</label>
+      <input id="nueva-password" type="password" minlength="8" autocomplete="new-password">
+      <button id="guardar-nueva-password" type="button">Guardar nueva contraseña</button>
+      <p id="mensaje-nueva-password" role="status" aria-live="polite"></p>
+    </div>
     <button id="mostrar-registro" class="boton-cambiar-formulario" type="button">¿No tienes cuenta? Regístrate aquí</button>
 
     <div id="panel-registro" hidden style="display:none; margin-top:24px; padding-top:22px; border-top:1px solid #e1eaf5;">
@@ -1700,6 +1713,21 @@ header nav a {
       </div>
       <button id="cerrar-sesion" type="button">⇥ Cerrar sesión</button>
     </div>
+
+    <section id="panel-administrador" hidden style="display:none; margin:20px 0; padding:22px; background:#fff; border:1px solid #d8e5f5; border-radius:16px;">
+      <h3 style="margin-top:0">Administrar orden de materiales</h3>
+      <p>Elige el curso y la asignatura. Cambia los números de posición y pulsa Guardar orden.</p>
+      <label for="admin-curso">Curso</label>
+      <select id="admin-curso"><option value="">Selecciona un curso</option></select>
+      <label for="admin-asignatura">Asignatura</label>
+      <select id="admin-asignatura">
+        <option value="MATEMÁTICAS">Matemáticas</option><option value="FÍSICA Y QUÍMICA">Física y Química</option><option value="LENGUA">Lengua</option><option value="DIBUJO">Dibujo</option>
+      </select>
+      <button id="admin-cargar" type="button">Mostrar materiales</button>
+      <div id="admin-lista-materiales" style="margin-top:16px"></div>
+      <button id="admin-guardar-orden" type="button" hidden>Guardar orden</button>
+      <p id="admin-mensaje" role="status" aria-live="polite"></p>
+    </section>
 
     <div class="titulo-materiales">
       <h3>Mis asignaturas</h3>
@@ -1796,6 +1824,8 @@ header nav a {
     SUPABASE_URL,
     SUPABASE_KEY
   );
+  const ADMIN_UID = "aea3830d-08fb-4293-a7b8-29bb4378a333";
+  let adminMaterialesActuales = [];
 
   const formulario = document.getElementById("form-login");
   const formularioRegistro = document.getElementById("form-registro");
@@ -1807,6 +1837,45 @@ header nav a {
   const panelRegistro = document.getElementById("panel-registro");
   const botonMostrarRegistro = document.getElementById("mostrar-registro");
   const botonVolverLogin = document.getElementById("volver-login");
+  const panelAdmin = document.getElementById("panel-administrador");
+  const adminMensaje = document.getElementById("admin-mensaje");
+  const panelRecuperar = document.getElementById("panel-recuperar-password");
+  const panelNuevaPassword = document.getElementById("panel-nueva-password");
+
+  document.getElementById("recuperar-password")?.addEventListener("click", () => {
+    panelRecuperar.hidden = false;
+    panelRecuperar.style.display = "block";
+    document.getElementById("mensaje-recuperacion").textContent = "";
+  });
+
+  document.getElementById("enviar-recuperacion")?.addEventListener("click", async () => {
+    const email = document.getElementById("email-alumno").value.trim();
+    const estado = document.getElementById("mensaje-recuperacion");
+    if (!email) { estado.textContent = "Escribe primero tu correo electrónico en el campo de inicio de sesión."; return; }
+    estado.textContent = "Enviando correo...";
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname + "#recuperar-contrasena"
+    });
+    estado.textContent = error ? "No se pudo enviar el correo. Comprueba la configuración de URL de recuperación en Supabase e inténtalo de nuevo." : "Si el correo está registrado, recibirás un enlace para crear una nueva contraseña. Revisa también spam.";
+  });
+
+  supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      panelNuevaPassword.hidden = false;
+      panelNuevaPassword.style.display = "block";
+      panelRecuperar.hidden = true;
+      panelRecuperar.style.display = "none";
+    }
+  });
+
+  document.getElementById("guardar-nueva-password")?.addEventListener("click", async () => {
+    const password = document.getElementById("nueva-password").value;
+    const estado = document.getElementById("mensaje-nueva-password");
+    if (password.length < 8) { estado.textContent = "La contraseña debe tener al menos 8 caracteres."; return; }
+    const { error } = await supabaseClient.auth.updateUser({ password });
+    estado.textContent = error ? "No se pudo cambiar la contraseña. Solicita un nuevo enlace de recuperación." : "Contraseña actualizada. Ya puedes iniciar sesión con ella.";
+    if (!error) { await supabaseClient.auth.signOut(); mostrarZonaPrivada(false); formulario.reset(); }
+  });
 
   function mostrarZonaPrivada(autenticado) {
     if (zonaLogin) zonaLogin.style.display = autenticado ? 'none' : 'block';
@@ -1844,6 +1913,19 @@ header nav a {
     const sesion = data.session;
     if (!sesion) {
       mostrarZonaPrivada(false);
+      if (panelAdmin) { panelAdmin.hidden = true; panelAdmin.style.display = "none"; }
+      return;
+    }
+    if (sesion.user.id === ADMIN_UID) {
+      actualizarBienvenida("Administrador");
+      document.getElementById("curso-alumno").textContent = "Administración";
+      mostrarZonaPrivada(true);
+      if (panelAdmin) { panelAdmin.hidden = false; panelAdmin.style.display = "block"; }
+      const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
+      const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
+      if (tituloMateriales) tituloMateriales.style.display = "none";
+      if (columnas) columnas.style.display = "none";
+      await adminInicializar();
       return;
     }
 
@@ -1883,6 +1965,20 @@ header nav a {
     if (error) {
       mensaje.textContent = "No se ha podido iniciar sesión. Comprueba el correo y la contraseña y, si acabas de registrarte, confirma tu correo electrónico.";
       console.error("Error de inicio de sesión:", error);
+      return;
+    }
+
+    if (data.user.id === ADMIN_UID) {
+      actualizarBienvenida("Administrador");
+      document.getElementById("curso-alumno").textContent = "Administración";
+      mensaje.textContent = "";
+      mostrarZonaPrivada(true);
+      if (panelAdmin) { panelAdmin.hidden = false; panelAdmin.style.display = "block"; }
+      const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
+      const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
+      if (tituloMateriales) tituloMateriales.style.display = "none";
+      if (columnas) columnas.style.display = "none";
+      await adminInicializar();
       return;
     }
 
@@ -1963,6 +2059,11 @@ header nav a {
       return;
     }
     mostrarZonaPrivada(false);
+    if (panelAdmin) { panelAdmin.hidden = true; panelAdmin.style.display = "none"; }
+    const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
+    const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
+    if (tituloMateriales) tituloMateriales.style.display = "";
+    if (columnas) columnas.style.display = "";
     volverAMisAsignaturas();
     formulario.reset();
     mensaje.textContent = "Has cerrado sesión correctamente.";
@@ -2048,6 +2149,85 @@ async function cargarMateriales(cursoAlumno) {
       zona.appendChild(aviso);
     }
   }));
+}
+
+async function adminInicializar() {
+  const cursoSelect = document.getElementById("admin-curso");
+  const estado = document.getElementById("admin-mensaje");
+  if (!cursoSelect) return;
+  estado.textContent = "Cargando cursos...";
+  const { data, error } = await supabaseClient.from("materiales").select("curso, cursos");
+  if (error) { estado.textContent = "No se pudieron cargar los cursos. Comprueba las políticas de lectura de materiales."; return; }
+  const cursos = new Set();
+  (data || []).forEach(m => {
+    if (m.curso && normalizarCurso(m.curso) !== "todos") cursos.add(m.curso.trim());
+    (Array.isArray(m.cursos) ? m.cursos : []).forEach(c => { if (c && normalizarCurso(c) !== "todos") cursos.add(c.trim()); });
+  });
+  const anterior = cursoSelect.value;
+  cursoSelect.replaceChildren(new Option("Selecciona un curso", ""));
+  [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => cursoSelect.add(new Option(c,c)));
+  if ([...cursoSelect.options].some(o => o.value === anterior)) cursoSelect.value = anterior;
+  estado.textContent = "Selecciona un curso y una asignatura para ordenar los materiales.";
+}
+
+document.getElementById("admin-cargar")?.addEventListener("click", adminCargarMateriales);
+document.getElementById("admin-guardar-orden")?.addEventListener("click", adminGuardarOrden);
+
+async function adminCargarMateriales() {
+  const curso = document.getElementById("admin-curso").value;
+  const asignatura = document.getElementById("admin-asignatura").value;
+  const lista = document.getElementById("admin-lista-materiales");
+  const botonGuardar = document.getElementById("admin-guardar-orden");
+  adminMensaje.textContent = "";
+  lista.replaceChildren();
+  if (!curso) { adminMensaje.textContent = "Selecciona un curso."; return; }
+  adminMensaje.textContent = "Cargando materiales...";
+  const { data: materiales, error } = await supabaseClient.from("materiales").select("id,titulo,descripcion,tipo,curso,cursos,asignatura,created_at").order("created_at", {ascending:true});
+  if (error) { adminMensaje.textContent = "No se pudieron cargar los materiales."; return; }
+  const { data: ordenes, error: errorOrden } = await supabaseClient.from("orden_materiales").select("material_id,curso,asignatura,posicion").eq("curso", curso).eq("asignatura", asignatura);
+  if (errorOrden) { adminMensaje.textContent = "No se pudieron leer los órdenes guardados. Revisa las políticas de orden_materiales."; return; }
+  const mapa = new Map((ordenes || []).map(o => [Number(o.material_id), Number(o.posicion)]));
+  adminMaterialesActuales = (materiales || []).filter(m => {
+    const cursos = Array.isArray(m.cursos) ? m.cursos : [];
+    const asignado = normalizarCurso(m.curso) === normalizarCurso(curso) || cursos.some(c => normalizarCurso(c) === normalizarCurso(curso)) || normalizarCurso(m.curso) === "todos" || cursos.some(c => normalizarCurso(c) === "todos");
+    const asignaturaDetectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+    return asignado && asignaturaDetectada === normalizarAsignatura(asignatura);
+  }).sort((a,b) => {
+    const pa = mapa.has(Number(a.id)) ? mapa.get(Number(a.id)) : Number.MAX_SAFE_INTEGER;
+    const pb = mapa.has(Number(b.id)) ? mapa.get(Number(b.id)) : Number.MAX_SAFE_INTEGER;
+    return pa - pb || new Date(a.created_at || 0) - new Date(b.created_at || 0);
+  });
+  if (!adminMaterialesActuales.length) { adminMensaje.textContent = "No hay materiales de esa asignatura asignados a este curso."; botonGuardar.hidden = true; return; }
+  adminMaterialesActuales.forEach((m, index) => {
+    const fila = document.createElement("div");
+    fila.style.cssText = "display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #e4ebf4";
+    const titulo = document.createElement("div");
+    titulo.textContent = m.titulo || `Material ${m.id}`;
+    const etiqueta = document.createElement("label");
+    etiqueta.textContent = "Posición";
+    const input = document.createElement("input");
+    input.type = "number"; input.min = "1"; input.step = "1"; input.required = true;
+    input.value = mapa.has(Number(m.id)) ? mapa.get(Number(m.id)) : index + 1;
+    input.dataset.materialId = m.id;
+    input.setAttribute("aria-label", `Posición de ${m.titulo || m.id}`);
+    etiqueta.appendChild(input); fila.append(titulo, etiqueta); lista.appendChild(fila);
+  });
+  botonGuardar.hidden = false;
+  adminMensaje.textContent = `Se muestran ${adminMaterialesActuales.length} materiales. Ajusta las posiciones y guarda.`;
+}
+
+async function adminGuardarOrden() {
+  const curso = document.getElementById("admin-curso").value;
+  const asignatura = document.getElementById("admin-asignatura").value;
+  const inputs = [...document.querySelectorAll("#admin-lista-materiales input[data-material-id]")];
+  if (!curso || !inputs.length) { adminMensaje.textContent = "Primero muestra los materiales de un curso y asignatura."; return; }
+  const valores = inputs.map(i => ({material_id:Number(i.dataset.materialId), curso, asignatura, posicion:Number(i.value)}));
+  if (valores.some(v => !Number.isInteger(v.posicion) || v.posicion < 1)) { adminMensaje.textContent = "Todas las posiciones deben ser números enteros mayores que cero."; return; }
+  if (new Set(valores.map(v => v.posicion)).size !== valores.length) { adminMensaje.textContent = "Usa una posición distinta para cada material."; return; }
+  adminMensaje.textContent = "Guardando orden...";
+  const { error } = await supabaseClient.from("orden_materiales").upsert(valores, {onConflict:"material_id,curso,asignatura"});
+  if (error) { console.error(error); adminMensaje.textContent = "No se pudo guardar. Hay que comprobar las políticas de INSERT/UPDATE de orden_materiales."; return; }
+  adminMensaje.textContent = "Orden guardado correctamente.";
 }
 
 function normalizarCurso(curso) {
