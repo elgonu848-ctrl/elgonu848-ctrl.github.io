@@ -1996,6 +1996,23 @@ async function cargarMateriales(cursoAlumno) {
     return coincideArray || coincideCursoAntiguo || asignadoATodos;
   });
 
+  // Leer el orden personalizado para el curso del alumno. Si no hay posición
+  // configurada, se conserva el orden original por fecha de subida.
+  const { data: ordenes } = await supabaseClient
+    .from("orden_materiales")
+    .select("material_id, curso, asignatura, posicion")
+    .eq("curso", cursoAlumno);
+  const mapaOrden = new Map((ordenes || []).map(o => [
+    `${o.material_id}|${normalizarCurso(o.curso)}|${normalizarAsignatura(o.asignatura)}`,
+    Number(o.posicion)
+  ]));
+  const posicionDe = material => {
+    const asignaturaMaterial = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
+    const clave = `${material.id}|${cursoNormalizado}|${normalizarAsignatura(asignaturaMaterial)}`;
+    return mapaOrden.has(clave) ? mapaOrden.get(clave) : Number.MAX_SAFE_INTEGER;
+  };
+  materialesDelCurso.sort((a, b) => posicionDe(a) - posicionDe(b));
+
   materialesDelCurso.forEach(material => {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
@@ -2035,6 +2052,10 @@ async function cargarMateriales(cursoAlumno) {
 
 function normalizarCurso(curso) {
   return (curso || "").toString().trim().toLocaleLowerCase("es").replace(/\s+/g, " ");
+}
+
+function normalizarAsignatura(asignatura) {
+  return (asignatura || "").toString().trim().toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
 function detectarAsignatura(texto) {
