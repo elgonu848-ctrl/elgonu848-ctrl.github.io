@@ -2401,11 +2401,39 @@ function alternarAsignatura(tipo, asignatura, boton) {
   window.scrollTo(0, 0);
 }
 
-// Si se abre directamente un enlace con #nuestra-academia o #acceso,
-// mostrar únicamente esa pantalla.
+// Al abrir un enlace de recuperación, priorizar siempre el formulario
+// de nueva contraseña, incluso si la carga inicial intenta mostrar la portada.
 document.addEventListener("DOMContentLoaded", () => {
-  const apartado = window.location.hash.replace("#", "");
-  mostrarApartado(["inicio", "nuestra-academia", "acceso"].includes(apartado) ? apartado : "inicio");
+  const hash = window.location.hash || "";
+  const params = new URLSearchParams(window.location.search);
+  const esRecuperacion = params.get("reset") === "1" || /type=recovery/.test(hash);
+
+  if (esRecuperacion) {
+    mostrarApartado("acceso");
+    mostrarZonaPrivada(false);
+    const panelNueva = document.getElementById("panel-nueva-password");
+    const panelRecuperar = document.getElementById("panel-recuperar-password");
+    const formularioLogin = document.getElementById("form-login");
+    const botonRegistro = document.getElementById("mostrar-registro");
+    if (panelNueva) {
+      panelNueva.hidden = false;
+      panelNueva.style.display = "block";
+    }
+    if (panelRecuperar) {
+      panelRecuperar.hidden = true;
+      panelRecuperar.style.display = "none";
+    }
+    if (formularioLogin) formularioLogin.style.display = "none";
+    if (botonRegistro) botonRegistro.style.display = "none";
+    const panelRegistro = document.getElementById("panel-registro");
+    if (panelRegistro) {
+      panelRegistro.hidden = true;
+      panelRegistro.style.display = "none";
+    }
+  } else {
+    const apartado = hash.replace("#", "");
+    mostrarApartado(["inicio", "nuestra-academia", "acceso"].includes(apartado) ? apartado : "inicio");
+  }
 });
 </script>
 </body>
