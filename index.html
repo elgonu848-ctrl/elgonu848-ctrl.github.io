@@ -1977,7 +1977,7 @@ async function cargarMateriales(cursoAlumno) {
 
   const { data, error } = await supabaseClient
     .from("materiales")
-    .select("id, titulo, descripcion, tipo, url, curso, cursos")
+    .select("id, titulo, descripcion, tipo, url, curso, cursos, asignatura")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -2000,7 +2000,7 @@ async function cargarMateriales(cursoAlumno) {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
     if (!tipos.includes(tipo)) return;
-    const asignatura = detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`);
+    const asignatura = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
     if (!asignaturas.includes(asignatura)) return;
     const zona = document.getElementById(`${tipo}-${asignatura}`);
     if (!zona) return;
