@@ -1599,9 +1599,10 @@ header nav a {
 <style id="correccion-campos-y-tipos-materiales">
 /* El campo de posición queda siempre dentro de la tarjeta de administración */
 #admin-lista-materiales { width: 100%; max-width: 100%; min-width: 0; overflow: hidden; }
-#admin-lista-materiales > div { width: 100% !important; max-width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr) 76px !important; box-sizing: border-box; }
-#admin-lista-materiales label { display: block !important; width: 76px !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box; }
-#admin-lista-materiales input[type="number"] { display: block !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; box-sizing: border-box !important; }
+#admin-lista-materiales { width: 100%; max-width: 100%; min-width: 0; overflow: hidden; }
+#admin-lista-materiales > div { width: 100% !important; max-width: 100%; min-width: 0; grid-template-columns: minmax(0, 1fr) 58px !important; gap: 10px !important; box-sizing: border-box; }
+#admin-lista-materiales label { display: block !important; width: 58px !important; min-width: 0 !important; max-width: 100% !important; font-size: 12px; box-sizing: border-box; }
+#admin-lista-materiales input[type="number"] { display: block !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; padding: 5px 6px !important; box-sizing: border-box !important; }
 /* Diferenciación visual entre apuntes/documentos y ejercicios */
 #pantalla-asignatura.tipo-apuntes .detalle-icono { background: #1769d2; }
 #pantalla-asignatura.tipo-apuntes .detalle-cabecera h4 { color: #1769d2 !important; }
@@ -1614,6 +1615,16 @@ header nav a {
 #pantalla-asignatura.tipo-ejercicios .detalle-archivos .icono-archivo:not(.pdf) { background: #16805d; }
 #pantalla-asignatura.tipo-ejercicios .detalle-archivos .material-asignatura a { background: #d9f3e6; color: #126746 !important; }
 #pantalla-asignatura.tipo-ejercicios .detalle-archivos .material-asignatura a:hover { background: #c4ead6; }
+/* Diferenciar también las dos tarjetas principales de materiales */
+#contenido-alumnos .columnas-materiales > .panel-materiales:first-child { border-top: 4px solid #1769d2; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:first-child .cabecera-materiales h4 { color: #1769d2 !important; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:first-child .icono-material { background: #d9eaff; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:first-child .asignaturas-acordeon button { background: #edf5ff; border-color: #bfdcff; color: #075fc5; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:nth-child(2) { border-top: 4px solid #16805d; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:nth-child(2) .cabecera-materiales h4 { color: #16805d !important; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:nth-child(2) .icono-material { background: #d9f3e6; }
+#contenido-alumnos .columnas-materiales > .panel-materiales:nth-child(2) .asignaturas-acordeon button { background: #effaf4; border-color: #bfe8d1; color: #126746; }
+#admin-lista-materiales > div label { justify-self: end; }
 </style>
 
 </head>
