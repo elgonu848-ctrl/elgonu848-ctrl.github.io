@@ -2120,8 +2120,8 @@ async function cargarMateriales(cursoAlumno) {
   const asignaturas = ["matematicas", "fisica-quimica", "lengua", "dibujo", "economia"];
   // Mostrar ECONOMÍA únicamente en 1.º y 2.º de Bachillerato.
   // Acepta variantes como "1 BACHILLER", "1º Bachillerato" y "2o Bachiller".
-  const cursoNormalizado = normalizarCurso(cursoAlumno).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const cursoVisibleEconomia = /^(1|2)\s*(º|o)?\s*bachiller(ato)?$/.test(cursoNormalizado);
+  const cursoNormalizadoEconomia = normalizarCurso(cursoAlumno).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const cursoVisibleEconomia = /^(1|2)\s*(º|o)?\s*bachiller(ato)?$/.test(cursoNormalizadoEconomia);
   ["bloque-apuntes-economia", "bloque-ejercicios-economia"].forEach(id => {
     const bloque = document.getElementById(id);
     if (bloque) {
