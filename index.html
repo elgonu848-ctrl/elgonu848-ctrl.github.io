@@ -2281,14 +2281,66 @@ async function adminGuardarOrden() {
   const curso = document.getElementById("admin-curso").value;
   const asignatura = document.getElementById("admin-asignatura").value;
   const inputs = [...document.querySelectorAll("#admin-lista-materiales input[data-material-id]")];
-  if (!curso || !inputs.length) { adminMensaje.textContent = "Primero muestra los materiales de un curso y asignatura."; return; }
-  const valores = inputs.map(i => ({material_id:Number(i.dataset.materialId), curso, asignatura, posicion:Number(i.value)}));
-  if (valores.some(v => !Number.isInteger(v.posicion) || v.posicion < 1)) { adminMensaje.textContent = "Todas las posiciones deben ser números enteros mayores que cero."; return; }
-  if (new Set(valores.map(v => v.posicion)).size !== valores.length) { adminMensaje.textContent = "Usa una posición distinta para cada material."; return; }
+  if (!curso || !inputs.length) {
+    adminMensaje.textContent = "Primero muestra los materiales de un curso y asignatura.";
+    return;
+  }
+
+  const valores = inputs.map(i => ({
+    material_id: Number(i.dataset.materialId),
+    curso,
+    asignatura,
+    posicion: Number(i.value)
+  }));
+
+  if (valores.some(v => !Number.isInteger(v.posicion) || v.posicion < 1)) {
+    adminMensaje.textContent = "Todas las posiciones deben ser números enteros mayores que cero.";
+    return;
+  }
+  if (new Set(valores.map(v => v.posicion)).size !== valores.length) {
+    adminMensaje.textContent = "Usa una posición distinta para cada material.";
+    return;
+  }
+
+  const boton = document.getElementById("admin-guardar-orden");
+  boton.disabled = true;
   adminMensaje.textContent = "Guardando orden...";
-  const { error } = await supabaseClient.from("orden_materiales").upsert(valores, {onConflict:"material_id,curso,asignatura"});
-  if (error) { console.error(error); adminMensaje.textContent = "No se pudo guardar. Hay que comprobar las políticas de INSERT/UPDATE de orden_materiales."; return; }
-  adminMensaje.textContent = "Orden guardado correctamente.";
+
+  try {
+    // Se evita depender de que exista una restricción UNIQUE compatible con upsert.
+    // Primero se eliminan las posiciones guardadas para este curso/asignatura y después
+    // se insertan las nuevas. La política de administrador debe permitir DELETE e INSERT.
+    const { error: errorBorrado } = await supabaseClient
+      .from("orden_materiales")
+      .delete()
+      .eq("curso", curso)
+      .eq("asignatura", asignatura);
+
+    if (errorBorrado) {
+      console.error("Error al borrar el orden anterior:", errorBorrado);
+      adminMensaje.textContent = "No se pudo borrar el orden anterior. Comprueba la política DELETE de orden_materiales.";
+      return;
+    }
+
+    const { error: errorInsercion } = await supabaseClient
+      .from("orden_materiales")
+      .insert(valores);
+
+    if (errorInsercion) {
+      console.error("Error al guardar el nuevo orden:", errorInsercion);
+      adminMensaje.textContent = "Se borró el orden anterior, pero no se pudo guardar el nuevo. Comprueba la política INSERT de orden_materiales.";
+      return;
+    }
+
+    adminMensaje.textContent = "Orden guardado correctamente. Comprobando...";
+    await adminCargarMateriales();
+    adminMensaje.textContent = "Orden guardado correctamente.";
+  } catch (e) {
+    console.error("Error inesperado al guardar el orden:", e);
+    adminMensaje.textContent = "Se produjo un error inesperado al guardar el orden.";
+  } finally {
+    boton.disabled = false;
+  }
 }
 
 function normalizarCurso(curso) {
