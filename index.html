@@ -2198,11 +2198,7 @@ async function adminCargarMateriales() {
   const { data: materiales, error } = await supabaseClient.from("materiales").select("id,titulo,descripcion,tipo,curso,cursos,asignatura,created_at").order("created_at", {ascending:true});
   if (error) { adminMensaje.textContent = "No se pudieron cargar los materiales."; return; }
   const { data: ordenes, error: errorOrden } = await supabaseClient.from("orden_materiales").select("material_id,curso,asignatura,posicion").eq("curso", curso).eq("asignatura", asignatura);
-  if (errorOrden) {
-    console.error("Error al leer orden_materiales:", errorOrden);
-    adminMensaje.textContent = "Error al leer órdenes: " + (errorOrden.message || JSON.stringify(errorOrden));
-    return;
-  }
+  if (errorOrden) { console.error("Error al leer orden_materiales:", errorOrden); adminMensaje.textContent = "Error al leer orden_materiales: " + (errorOrden.message || JSON.stringify(errorOrden)); return; }
   const mapa = new Map((ordenes || []).map(o => [Number(o.material_id), Number(o.posicion)]));
   adminMaterialesActuales = (materiales || []).filter(m => {
     const cursos = Array.isArray(m.cursos) ? m.cursos : [];
