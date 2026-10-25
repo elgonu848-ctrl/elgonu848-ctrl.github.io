@@ -2118,16 +2118,10 @@ header nav a {
 async function cargarMateriales(cursoAlumno) {
   const tipos = ["apuntes", "ejercicios"];
   const asignaturas = ["matematicas", "fisica-quimica", "lengua", "dibujo", "economia"];
-  // Mostrar ECONOMÍA únicamente en 1.º y 2.º de Bachillerato.
-  // Acepta variantes como "1 BACHILLER", "1º Bachillerato" y "2o Bachiller".
-  const cursoNormalizadoEconomia = normalizarCurso(cursoAlumno).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const cursoVisibleEconomia = /^(1|2)\s*(º|o)?\s*bachiller(ato)?$/.test(cursoNormalizadoEconomia);
+  const cursoVisibleEconomia = ["1 bachiller", "2 bachiller"].includes(normalizarCurso(cursoAlumno));
   ["bloque-apuntes-economia", "bloque-ejercicios-economia"].forEach(id => {
     const bloque = document.getElementById(id);
-    if (bloque) {
-      bloque.hidden = !cursoVisibleEconomia;
-      bloque.style.display = cursoVisibleEconomia ? "" : "none";
-    }
+    if (bloque) bloque.hidden = !cursoVisibleEconomia;
   });
   tipos.forEach(tipo => asignaturas.forEach(asignatura => {
     const zona = document.getElementById(`${tipo}-${asignatura}`);
