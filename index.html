@@ -2236,21 +2236,36 @@ async function adminCargarMateriales() {
     const cursos = Array.isArray(m.cursos) ? m.cursos : [];
     const asignado = normalizarCurso(m.curso) === normalizarCurso(curso) || cursos.some(c => normalizarCurso(c) === normalizarCurso(curso)) || normalizarCurso(m.curso) === "todos" || cursos.some(c => normalizarCurso(c) === "todos");
     const asignaturaDetectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
-    return asignado && asignaturaDetectada === normalizarAsignatura(asignatura);
+    const tipoOriginal = normalizarAsignatura(m.tipo || "");
+    return asignado && asignaturaDetectada === normalizarAsignatura(asignatura) && ["apuntes", "documentos", "documento", "ejercicios", "ejercicio"].includes(tipoOriginal);
   }).sort((a,b) => {
+    const tipoA = ["apuntes", "documentos", "documento"].includes(normalizarAsignatura(a.tipo || "")) ? 0 : 1;
+    const tipoB = ["apuntes", "documentos", "documento"].includes(normalizarAsignatura(b.tipo || "")) ? 0 : 1;
     const pa = mapa.has(Number(a.id)) ? mapa.get(Number(a.id)) : Number.MAX_SAFE_INTEGER;
     const pb = mapa.has(Number(b.id)) ? mapa.get(Number(b.id)) : Number.MAX_SAFE_INTEGER;
-    return pa - pb || new Date(a.created_at || 0) - new Date(b.created_at || 0);
+    return tipoA - tipoB || pa - pb || new Date(a.created_at || 0) - new Date(b.created_at || 0);
   });
   if (!adminMaterialesActuales.length) { adminMensaje.textContent = "No hay materiales de esa asignatura asignados a este curso."; botonGuardar.hidden = true; return; }
+  let tipoAnterior = "";
+  let posicionInicial = 1;
   adminMaterialesActuales.forEach((m, index) => {
+    const tipoOriginal = normalizarAsignatura(m.tipo || "");
+    const tipoGrupo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : "ejercicios";
+    if (tipoGrupo !== tipoAnterior) {
+      const cabecera = document.createElement("div");
+      cabecera.textContent = tipoGrupo === "apuntes" ? "📘 Apuntes y documentos" : "✏️ Ejercicios";
+      cabecera.style.cssText = "margin-top:14px;padding:10px 12px;background:#eaf2ff;color:#173f78;border-left:4px solid #1769d2;border-radius:7px;font-weight:700;text-align:left;";
+      lista.appendChild(cabecera);
+      tipoAnterior = tipoGrupo;
+    }
     const fila = document.createElement("div");
-    fila.style.cssText = "display:grid;width:100%;min-width:0;grid-template-columns:minmax(0,1fr) 76px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #e4ebf4;box-sizing:border-box";
+    fila.style.cssText = "display:grid;width:100%;min-width:0;grid-template-columns:minmax(0,1fr) 58px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e4ebf4;box-sizing:border-box";
     const titulo = document.createElement("div");
     titulo.textContent = m.titulo || `Material ${m.id}`;
+    titulo.style.cssText = "min-width:0;overflow-wrap:anywhere;text-align:left;";
     const etiqueta = document.createElement("label");
     etiqueta.textContent = "Posición";
-    etiqueta.style.cssText = "display:block;width:76px;min-width:0;max-width:100%;box-sizing:border-box;font-size:13px";
+    etiqueta.style.cssText = "display:block;width:58px;min-width:0;max-width:100%;box-sizing:border-box;font-size:12px";
     const input = document.createElement("input");
     input.type = "number"; input.min = "1"; input.step = "1"; input.required = true; input.style.cssText = "display:block;width:100% !important;min-width:0;max-width:100%;box-sizing:border-box;margin:4px 0 0;padding:5px 4px;font-size:13px;";
     input.value = mapa.has(Number(m.id)) ? mapa.get(Number(m.id)) : index + 1;
