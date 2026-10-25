@@ -2198,7 +2198,7 @@ async function adminCargarMateriales() {
   const { data: materiales, error } = await supabaseClient.from("materiales").select("id,titulo,descripcion,tipo,curso,cursos,asignatura,created_at").order("created_at", {ascending:true});
   if (error) { adminMensaje.textContent = "No se pudieron cargar los materiales."; return; }
   const { data: ordenes, error: errorOrden } = await supabaseClient.from("orden_materiales").select("material_id,curso,asignatura,posicion").eq("curso", curso).eq("asignatura", asignatura);
-  if (errorOrden) { console.error("Error al leer orden_materiales:", errorOrden); adminMensaje.textContent = "Error al leer orden_materiales: " + (errorOrden.message || JSON.stringify(errorOrden)); return; }
+  if (errorOrden) { adminMensaje.textContent = "No se pudieron leer los órdenes guardados. Revisa las políticas de orden_materiales."; return; }
   const mapa = new Map((ordenes || []).map(o => [Number(o.material_id), Number(o.posicion)]));
   adminMaterialesActuales = (materiales || []).filter(m => {
     const cursos = Array.isArray(m.cursos) ? m.cursos : [];
@@ -2219,7 +2219,7 @@ async function adminCargarMateriales() {
     const etiqueta = document.createElement("label");
     etiqueta.textContent = "Posición";
     const input = document.createElement("input");
-    input.type = "number"; input.min = "1"; input.step = "1"; input.required = true;
+    input.type = "number"; input.min = "1"; input.step = "1"; input.required = true; input.style.cssText = "width:64px; max-width:100%; box-sizing:border-box;";
     input.value = mapa.has(Number(m.id)) ? mapa.get(Number(m.id)) : index + 1;
     input.dataset.materialId = m.id;
     input.setAttribute("aria-label", `Posición de ${m.titulo || m.id}`);
