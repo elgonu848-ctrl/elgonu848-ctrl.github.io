@@ -2152,12 +2152,24 @@ async function cargarMateriales(cursoAlumno) {
     `${o.material_id}|${normalizarCurso(o.curso)}|${normalizarAsignatura(o.asignatura)}`,
     Number(o.posicion)
   ]));
+  const tipoDeMaterial = material => {
+    const tipoOriginal = (material.tipo || "").trim().toLowerCase();
+    return ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? 0 : 1;
+  };
   const posicionDe = material => {
     const asignaturaMaterial = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
     const clave = `${material.id}|${cursoNormalizado}|${normalizarAsignatura(asignaturaMaterial)}`;
     return mapaOrden.has(clave) ? mapaOrden.get(clave) : Number.MAX_SAFE_INTEGER;
   };
-  materialesDelCurso.sort((a, b) => posicionDe(a) - posicionDe(b));
+  // El orden se aplica independientemente dentro de cada bloque: apuntes/documentos y ejercicios.
+  // Así, ambos bloques pueden tener materiales con posición 1, 2, 3, etc.
+  materialesDelCurso.sort((a, b) => {
+    const diferenciaTipo = tipoDeMaterial(a) - tipoDeMaterial(b);
+    if (diferenciaTipo !== 0) return diferenciaTipo;
+    const diferenciaPosicion = posicionDe(a) - posicionDe(b);
+    if (diferenciaPosicion !== 0) return diferenciaPosicion;
+    return 0;
+  });
 
   materialesDelCurso.forEach(material => {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
@@ -2247,7 +2259,7 @@ async function adminCargarMateriales() {
   });
   if (!adminMaterialesActuales.length) { adminMensaje.textContent = "No hay materiales de esa asignatura asignados a este curso."; botonGuardar.hidden = true; return; }
   let tipoAnterior = "";
-  let posicionInicial = 1;
+  const siguientePosicionPorTipo = { apuntes: 1, ejercicios: 1 };
   adminMaterialesActuales.forEach((m, index) => {
     const tipoOriginal = normalizarAsignatura(m.tipo || "");
     const tipoGrupo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : "ejercicios";
@@ -2268,7 +2280,9 @@ async function adminCargarMateriales() {
     etiqueta.style.cssText = "display:block;width:58px;min-width:0;max-width:100%;box-sizing:border-box;font-size:12px";
     const input = document.createElement("input");
     input.type = "number"; input.min = "1"; input.step = "1"; input.required = true; input.style.cssText = "display:block;width:100% !important;min-width:0;max-width:100%;box-sizing:border-box;margin:4px 0 0;padding:5px 4px;font-size:13px;";
-    input.value = mapa.has(Number(m.id)) ? mapa.get(Number(m.id)) : index + 1;
+    input.value = mapa.has(Number(m.id))
+      ? mapa.get(Number(m.id))
+      : siguientePosicionPorTipo[tipoGrupo]++;
     input.dataset.materialId = m.id;
     input.setAttribute("aria-label", `Posición de ${m.titulo || m.id}`);
     etiqueta.appendChild(input); fila.append(titulo, etiqueta); lista.appendChild(fila);
@@ -2297,9 +2311,21 @@ async function adminGuardarOrden() {
     adminMensaje.textContent = "Todas las posiciones deben ser números enteros mayores que cero.";
     return;
   }
-  if (new Set(valores.map(v => v.posicion)).size !== valores.length) {
-    adminMensaje.textContent = "Usa una posición distinta para cada material.";
-    return;
+  // Las posiciones solo deben ser únicas dentro de cada bloque de tipo.
+  // Por ejemplo, puede haber un material en posición 1 en Apuntes y otro en Ejercicios.
+  const posicionesPorTipo = new Map();
+  for (const input of inputs) {
+    const material = adminMaterialesActuales.find(m => Number(m.id) === Number(input.dataset.materialId));
+    const tipoOriginal = normalizarAsignatura(material?.tipo || "");
+    const tipoGrupo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : "ejercicios";
+    if (!posicionesPorTipo.has(tipoGrupo)) posicionesPorTipo.set(tipoGrupo, []);
+    posicionesPorTipo.get(tipoGrupo).push(Number(input.value));
+  }
+  for (const posiciones of posicionesPorTipo.values()) {
+    if (new Set(posiciones).size !== posiciones.length) {
+      adminMensaje.textContent = "Usa una posición distinta dentro de cada bloque (Apuntes y Ejercicios).";
+      return;
+    }
   }
 
   const boton = document.getElementById("admin-guardar-orden");
