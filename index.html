@@ -2155,18 +2155,22 @@ async function cargarMateriales(cursoAlumno) {
     .from("orden_materiales")
     .select("material_id, curso, asignatura, posicion")
     .eq("curso", cursoAlumno);
+  // Cada material tiene un único ID. Usarlo como clave evita que diferencias
+  // de formato en el curso o la asignatura impidan recuperar la posición guardada.
   const mapaOrden = new Map((ordenes || []).map(o => [
-    `${o.material_id}|${normalizarCurso(o.curso)}|${normalizarAsignatura(o.asignatura)}`,
-    Number(o.posicion)
+    Number(o.material_id), Number(o.posicion)
   ]));
   const tipoDeMaterial = material => {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     return ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? 0 : 1;
   };
   const posicionDe = material => {
-    const asignaturaMaterial = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
-    const clave = `${material.id}|${cursoNormalizado}|${normalizarAsignatura(asignaturaMaterial)}`;
-    return mapaOrden.has(clave) ? mapaOrden.get(clave) : Number.MAX_SAFE_INTEGER;
+    // Priorizar la columna asignatura de Supabase; solo inferirla para registros antiguos.
+    const asignaturaMaterial = material.asignatura
+      ? normalizarAsignatura(material.asignatura)
+      : normalizarAsignatura(detectarAsignatura(`${material.titulo || ""} ${material.descripcion || ""}`));
+    // El mapa procede del curso del alumno. La posición se identifica por material_id.
+    return mapaOrden.has(Number(material.id)) ? mapaOrden.get(Number(material.id)) : Number.MAX_SAFE_INTEGER;
   };
   // El orden se aplica independientemente dentro de cada bloque: apuntes/documentos y ejercicios.
   // Así, ambos bloques pueden tener materiales con posición 1, 2, 3, etc.
