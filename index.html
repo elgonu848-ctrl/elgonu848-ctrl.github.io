@@ -1733,6 +1733,10 @@ header nav a {
   </div>
 
   <div id="contenido-alumnos" hidden>
+    <div id="barra-salir-vista-alumno" hidden style="margin:0 0 16px;padding:12px 16px;background:#fff8e6;border:1px solid #f0d38b;border-radius:10px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <span style="color:#73520b;font-weight:600;">Vista previa de administrador: estás viendo la zona como la vería un alumno de este curso.</span>
+      <button id="admin-volver-panel" type="button" style="padding:9px 14px;border:0;border-radius:8px;background:#17365d;color:#fff;font-weight:bold;cursor:pointer;">Volver a administración</button>
+    </div>
     <div class="bienvenida-alumno">
       <div class="avatar-alumno" aria-hidden="true">👤</div>
       <div class="saludo-alumno">
@@ -1747,6 +1751,16 @@ header nav a {
     </div>
 
     <section id="panel-administrador" hidden style="display:none; margin:20px 0; padding:22px; background:#fff; border:1px solid #d8e5f5; border-radius:16px;">
+      <div style="padding:16px;margin-bottom:24px;background:#edf5ff;border:1px solid #c9def8;border-radius:12px;">
+        <h3 style="margin:0 0 8px;color:#17365d;">Ver la web como un alumno</h3>
+        <p style="margin:0 0 12px;color:#415875;">Elige un curso para abrir la misma zona de materiales que ve un alumno de ese curso, con los apuntes y ejercicios organizados por asignatura.</p>
+        <label for="admin-vista-curso">Curso que quieres previsualizar</label>
+        <select id="admin-vista-curso" style="display:block;width:100%;max-width:420px;margin:6px 0 12px;padding:10px;border:1px solid #c7d8ec;border-radius:8px;background:#fff;">
+          <option value="">Selecciona un curso</option>
+        </select>
+        <button id="admin-abrir-vista-alumno" type="button" style="padding:10px 16px;border:0;border-radius:8px;background:#1769d2;color:#fff;font-weight:bold;cursor:pointer;">Ver como alumno</button>
+        <p id="admin-vista-mensaje" role="status" aria-live="polite" style="margin:10px 0 0;"></p>
+      </div>
       <h3 style="margin-top:0">Administrar orden de materiales</h3>
       <p>Elige el curso y la asignatura. Cambia los números de posición y pulsa Guardar orden.</p>
       <label for="admin-curso">Curso</label>
@@ -2113,6 +2127,9 @@ header nav a {
     }
     mostrarZonaPrivada(false);
     if (panelAdmin) { panelAdmin.hidden = true; panelAdmin.style.display = "none"; }
+    vistaPreviaAdministradorActiva = false;
+    const barraSalida = document.getElementById("barra-salir-vista-alumno");
+    if (barraSalida) { barraSalida.hidden = true; barraSalida.style.display = "none"; }
     const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
     const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
     if (tituloMateriales) tituloMateriales.style.display = "";
@@ -2241,8 +2258,63 @@ async function adminInicializar() {
   cursoSelect.replaceChildren(new Option("Selecciona un curso", ""));
   [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => cursoSelect.add(new Option(c,c)));
   if ([...cursoSelect.options].some(o => o.value === anterior)) cursoSelect.value = anterior;
+
+  const vistaCurso = document.getElementById("admin-vista-curso");
+  if (vistaCurso) {
+    const anteriorVista = vistaCurso.value;
+    vistaCurso.replaceChildren(new Option("Selecciona un curso", ""));
+    [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => vistaCurso.add(new Option(c,c)));
+    if ([...vistaCurso.options].some(o => o.value === anteriorVista)) vistaCurso.value = anteriorVista;
+  }
   estado.textContent = "Selecciona un curso y una asignatura para ordenar los materiales.";
 }
+
+let vistaPreviaAdministradorActiva = false;
+
+document.getElementById("admin-abrir-vista-alumno")?.addEventListener("click", async () => {
+  const selector = document.getElementById("admin-vista-curso");
+  const estado = document.getElementById("admin-vista-mensaje");
+  const curso = selector?.value;
+  if (!curso) {
+    if (estado) estado.textContent = "Selecciona primero el curso que quieres previsualizar.";
+    return;
+  }
+
+  const panelAdmin = document.getElementById("panel-administrador");
+  const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
+  const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
+  const barraSalida = document.getElementById("barra-salir-vista-alumno");
+  const etiquetaCurso = document.getElementById("curso-alumno");
+
+  vistaPreviaAdministradorActiva = true;
+  if (panelAdmin) { panelAdmin.hidden = true; panelAdmin.style.display = "none"; }
+  if (tituloMateriales) tituloMateriales.style.display = "";
+  if (columnas) columnas.style.display = "";
+  if (barraSalida) { barraSalida.hidden = false; barraSalida.style.display = "flex"; }
+  if (etiquetaCurso) etiquetaCurso.textContent = curso;
+  const saludo = document.getElementById("saludo-nombre");
+  if (saludo) saludo.textContent = "Vista previa del curso";
+  await cargarMateriales(curso);
+  document.getElementById("contenido-alumnos")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.getElementById("admin-volver-panel")?.addEventListener("click", async () => {
+  vistaPreviaAdministradorActiva = false;
+  const panelAdmin = document.getElementById("panel-administrador");
+  const tituloMateriales = document.querySelector("#contenido-alumnos .titulo-materiales");
+  const columnas = document.querySelector("#contenido-alumnos .columnas-materiales");
+  const barraSalida = document.getElementById("barra-salir-vista-alumno");
+  if (panelAdmin) { panelAdmin.hidden = false; panelAdmin.style.display = "block"; }
+  if (tituloMateriales) tituloMateriales.style.display = "none";
+  if (columnas) columnas.style.display = "none";
+  if (barraSalida) { barraSalida.hidden = true; barraSalida.style.display = "none"; }
+  const etiquetaCurso = document.getElementById("curso-alumno");
+  if (etiquetaCurso) etiquetaCurso.textContent = "Administración";
+  const saludo = document.getElementById("saludo-nombre");
+  if (saludo) saludo.textContent = "Administrador";
+  await adminInicializar();
+  document.getElementById("panel-administrador")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
 
 document.getElementById("admin-ver-todos-cursos")?.addEventListener("click", adminVerTodosLosCursos);
 
