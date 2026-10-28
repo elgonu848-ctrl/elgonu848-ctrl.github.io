@@ -1734,7 +1734,14 @@ header nav a {
 
   <div id="contenido-alumnos" hidden>
     <div id="barra-salir-vista-alumno" hidden style="margin:0 0 16px;padding:12px 16px;background:#fff8e6;border:1px solid #f0d38b;border-radius:10px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-      <span style="color:#73520b;font-weight:600;">Vista previa de administrador: estás viendo la zona como la vería un alumno de este curso.</span>
+      <div style="flex:1;min-width:220px;">
+        <strong style="display:block;color:#73520b;">Vista previa de administrador</strong>
+        <span style="color:#73520b;">Estás viendo los materiales del curso seleccionado. Puedes cambiar de curso sin cerrar sesión.</span>
+      </div>
+      <label for="admin-vista-curso-en-preview" style="color:#73520b;font-weight:600;">Cambiar curso
+        <select id="admin-vista-curso-en-preview" style="display:block;min-width:180px;margin-top:4px;padding:8px;border:1px solid #e1c56f;border-radius:7px;background:#fff;"><option value="">Selecciona curso</option></select>
+      </label>
+      <button id="admin-cambiar-curso-preview" type="button" style="padding:9px 14px;border:0;border-radius:8px;background:#1769d2;color:#fff;font-weight:bold;cursor:pointer;">Ver curso</button>
       <button id="admin-volver-panel" type="button" style="padding:9px 14px;border:0;border-radius:8px;background:#17365d;color:#fff;font-weight:bold;cursor:pointer;">Volver a administración</button>
     </div>
     <div class="bienvenida-alumno">
@@ -2259,13 +2266,15 @@ async function adminInicializar() {
   [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => cursoSelect.add(new Option(c,c)));
   if ([...cursoSelect.options].some(o => o.value === anterior)) cursoSelect.value = anterior;
 
-  const vistaCurso = document.getElementById("admin-vista-curso");
-  if (vistaCurso) {
-    const anteriorVista = vistaCurso.value;
-    vistaCurso.replaceChildren(new Option("Selecciona un curso", ""));
-    [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => vistaCurso.add(new Option(c,c)));
-    if ([...vistaCurso.options].some(o => o.value === anteriorVista)) vistaCurso.value = anteriorVista;
-  }
+  const cursosOrdenados = [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true}));
+  ["admin-vista-curso", "admin-vista-curso-en-preview"].forEach(id => {
+    const selectorVista = document.getElementById(id);
+    if (!selectorVista) return;
+    const anteriorVista = selectorVista.value;
+    selectorVista.replaceChildren(new Option("Selecciona un curso", ""));
+    cursosOrdenados.forEach(c => selectorVista.add(new Option(c,c)));
+    if (cursosOrdenados.some(c => c === anteriorVista)) selectorVista.value = anteriorVista;
+  });
   estado.textContent = "Selecciona un curso y una asignatura para ordenar los materiales.";
 }
 
@@ -2294,8 +2303,36 @@ document.getElementById("admin-abrir-vista-alumno")?.addEventListener("click", a
   if (etiquetaCurso) etiquetaCurso.textContent = curso;
   const saludo = document.getElementById("saludo-nombre");
   if (saludo) saludo.textContent = "Vista previa del curso";
+  const selectorEnPreview = document.getElementById("admin-vista-curso-en-preview");
+  if (selectorEnPreview) selectorEnPreview.value = curso;
+  volverAMisAsignaturas();
   await cargarMateriales(curso);
+  // En la vista de administrador desplegamos las asignaturas para que se pueda
+  // comprobar el contenido sin tener que abrir cada apartado manualmente.
+  document.querySelectorAll("#contenido-alumnos .asignaturas-acordeon .bloque-asignatura").forEach(bloque => {
+    const boton = bloque.querySelector("button");
+    const contenido = bloque.querySelector(".contenido-asignatura");
+    if (boton && contenido && !bloque.hidden) {
+      boton.setAttribute("aria-expanded", "true");
+      const marca = boton.querySelector("span");
+      if (marca) marca.textContent = "−";
+      contenido.hidden = false;
+    }
+  });
+  const totalArchivos = [...document.querySelectorAll("#contenido-alumnos .contenido-asignatura")]
+    .reduce((total, zona) => total + [...zona.children].filter(el => el.querySelector("a")).length, 0);
+  if (estado) estado.textContent = `Vista previa abierta: ${curso}. Se han encontrado ${totalArchivos} materiales en los apartados de este curso.`;
   document.getElementById("contenido-alumnos")?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+document.getElementById("admin-cambiar-curso-preview")?.addEventListener("click", async () => {
+  const selector = document.getElementById("admin-vista-curso-en-preview");
+  const curso = selector?.value;
+  if (!curso) return;
+  const selectorPrincipal = document.getElementById("admin-vista-curso");
+  if (selectorPrincipal) selectorPrincipal.value = curso;
+  const boton = document.getElementById("admin-abrir-vista-alumno");
+  boton?.click();
 });
 
 document.getElementById("admin-volver-panel")?.addEventListener("click", async () => {
@@ -2308,6 +2345,16 @@ document.getElementById("admin-volver-panel")?.addEventListener("click", async (
   if (tituloMateriales) tituloMateriales.style.display = "none";
   if (columnas) columnas.style.display = "none";
   if (barraSalida) { barraSalida.hidden = true; barraSalida.style.display = "none"; }
+  document.querySelectorAll("#contenido-alumnos .asignaturas-acordeon .bloque-asignatura").forEach(bloque => {
+    const boton = bloque.querySelector("button");
+    const contenido = bloque.querySelector(".contenido-asignatura");
+    if (boton && contenido) {
+      boton.setAttribute("aria-expanded", "false");
+      const marca = boton.querySelector("span");
+      if (marca) marca.textContent = "＋";
+      contenido.hidden = true;
+    }
+  });
   const etiquetaCurso = document.getElementById("curso-alumno");
   if (etiquetaCurso) etiquetaCurso.textContent = "Administración";
   const saludo = document.getElementById("saludo-nombre");
