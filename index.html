@@ -1759,6 +1759,12 @@ header nav a {
       <div id="admin-lista-materiales" style="margin-top:16px"></div>
       <button id="admin-guardar-orden" type="button" hidden>Guardar orden</button>
       <p id="admin-mensaje" role="status" aria-live="polite"></p>
+      <hr style="margin:28px 0;border:0;border-top:1px solid #dce6f2;">
+      <h3 style="margin-top:0">Vista general de cursos y contenidos</h3>
+      <p>Consulta todos los cursos y revisa qué apuntes y ejercicios tiene cada uno, incluidos los materiales compartidos entre varios cursos.</p>
+      <button id="admin-ver-todos-cursos" type="button" style="margin:8px 0 16px;padding:10px 16px;border:0;border-radius:8px;background:#216da8;color:#fff;font-weight:bold;cursor:pointer">Mostrar todos los cursos y contenidos</button>
+      <p id="admin-resumen-mensaje" role="status" aria-live="polite"></p>
+      <div id="admin-resumen-cursos" style="display:grid;gap:18px;margin-top:16px"></div>
     </section>
 
     <div class="titulo-materiales">
@@ -2236,6 +2242,124 @@ async function adminInicializar() {
   [...cursos].sort((a,b) => a.localeCompare(b, "es", {numeric:true})).forEach(c => cursoSelect.add(new Option(c,c)));
   if ([...cursoSelect.options].some(o => o.value === anterior)) cursoSelect.value = anterior;
   estado.textContent = "Selecciona un curso y una asignatura para ordenar los materiales.";
+}
+
+document.getElementById("admin-ver-todos-cursos")?.addEventListener("click", adminVerTodosLosCursos);
+
+async function adminVerTodosLosCursos() {
+  const estado = document.getElementById("admin-resumen-mensaje");
+  const contenedor = document.getElementById("admin-resumen-cursos");
+  if (!estado || !contenedor) return;
+  estado.textContent = "Cargando cursos y contenidos...";
+  contenedor.replaceChildren();
+
+  const { data: materiales, error } = await supabaseClient
+    .from("materiales")
+    .select("id,titulo,descripcion,tipo,url,curso,cursos,asignatura,created_at")
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Error al consultar el resumen de materiales:", error);
+    estado.textContent = "No se pudieron cargar los materiales. Revisa las políticas de lectura de la tabla materiales en Supabase.";
+    return;
+  }
+
+  const cursos = new Set();
+  (materiales || []).forEach(m => {
+    if (m.curso && normalizarCurso(m.curso) !== "todos") cursos.add(String(m.curso).trim());
+    (Array.isArray(m.cursos) ? m.cursos : []).forEach(c => {
+      if (c && normalizarCurso(c) !== "todos") cursos.add(String(c).trim());
+    });
+  });
+
+  const cursosOrdenados = [...cursos].sort((a, b) => a.localeCompare(b, "es", { numeric: true }));
+  if (!cursosOrdenados.length) {
+    estado.textContent = "No se han encontrado cursos asignados a los materiales.";
+    return;
+  }
+
+  const crear = (tag, texto, estilo) => {
+    const el = document.createElement(tag);
+    if (texto !== undefined && texto !== null) el.textContent = texto;
+    if (estilo) el.style.cssText = estilo;
+    return el;
+  };
+
+  let totalAsignaciones = 0;
+  cursosOrdenados.forEach(curso => {
+    const cursoNorm = normalizarCurso(curso);
+    const delCurso = (materiales || []).filter(m => {
+      const listaCursos = Array.isArray(m.cursos) ? m.cursos : [];
+      return normalizarCurso(m.curso) === cursoNorm ||
+        listaCursos.some(c => normalizarCurso(c) === cursoNorm) ||
+        normalizarCurso(m.curso) === "todos" ||
+        listaCursos.some(c => normalizarCurso(c) === "todos");
+    });
+    totalAsignaciones += delCurso.length;
+
+    const tarjeta = crear("section", null, "background:#fff;border:1px solid #d8e5f5;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(20,65,120,.06)");
+    const cabecera = crear("div", null, "display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px");
+    cabecera.appendChild(crear("h4", curso, "margin:0;color:#17365d;font-size:19px"));
+    cabecera.appendChild(crear("span", `${delCurso.length} material${delCurso.length === 1 ? "" : "es"}`, "background:#eaf2fc;color:#245da0;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700"));
+    tarjeta.appendChild(cabecera);
+
+    const asignaturas = [
+      { nombre: "Matemáticas", claves: ["matematicas", "matemáticas"] },
+      { nombre: "Física y Química", claves: ["fisica-quimica", "física y química", "fisica y quimica"] },
+      { nombre: "Lengua", claves: ["lengua"] },
+      { nombre: "Dibujo", claves: ["dibujo"] },
+      { nombre: "Economía", claves: ["economia", "economía"] }
+    ];
+    const agrupados = new Map();
+    delCurso.forEach(m => {
+      const detectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+      const claveTipo = normalizarAsignatura(m.tipo || "");
+      let asignaturaNombre = "Otros / sin asignatura";
+      for (const a of asignaturas) {
+        if (a.claves.some(k => normalizarAsignatura(k) === detectada) || a.claves.some(k => normalizarAsignatura(k) === normalizarAsignatura(m.asignatura || ""))) {
+          asignaturaNombre = a.nombre;
+          break;
+        }
+      }
+      const tipoNombre = claveTipo.includes("ejercicio") ? "Ejercicios" : (claveTipo.includes("apunte") || claveTipo.includes("document") ? "Apuntes y documentos" : (m.tipo || "Otros materiales"));
+      const llave = `${asignaturaNombre}|||${tipoNombre}`;
+      if (!agrupados.has(llave)) agrupados.set(llave, []);
+      agrupados.get(llave).push(m);
+    });
+
+    if (!delCurso.length) {
+      tarjeta.appendChild(crear("p", "Todavía no hay materiales asignados a este curso.", "margin:8px 0;color:#68768b"));
+    } else {
+      const gruposOrdenados = [...agrupados.entries()].sort((a,b) => a[0].localeCompare(b[0], "es"));
+      gruposOrdenados.forEach(([llave, items]) => {
+        const [asignaturaNombre, tipoNombre] = llave.split("|||");
+        const grupo = crear("div", null, "margin-top:14px");
+        grupo.appendChild(crear("h5", `${asignaturaNombre} · ${tipoNombre} (${items.length})`, "margin:0 0 8px;color:#245da0;font-size:15px"));
+        const lista = crear("ul", null, "margin:0;padding-left:22px;display:grid;gap:7px");
+        items.forEach(m => {
+          const li = crear("li");
+          const titulo = m.titulo || m.descripcion || "Documento sin título";
+          if (m.url) {
+            const enlace = crear("a", titulo);
+            enlace.href = m.url;
+            enlace.target = "_blank";
+            enlace.rel = "noopener noreferrer";
+            enlace.style.cssText = "color:#145db5;text-decoration:underline;overflow-wrap:anywhere";
+            li.appendChild(enlace);
+          } else {
+            li.appendChild(crear("span", titulo));
+            li.appendChild(crear("span", " · Sin enlace", "color:#b45309;font-size:12px;margin-left:5px"));
+          }
+          lista.appendChild(li);
+        });
+        grupo.appendChild(lista);
+        tarjeta.appendChild(grupo);
+      });
+    }
+    contenedor.appendChild(tarjeta);
+  });
+
+  estado.textContent = `Se muestran ${cursosOrdenados.length} cursos y ${totalAsignaciones} asignaciones de materiales. Los materiales compartidos pueden aparecer en más de un curso.`;
 }
 
 document.getElementById("admin-cargar")?.addEventListener("click", adminCargarMateriales);
