@@ -1782,7 +1782,7 @@ header nav a {
       <p id="admin-mensaje" role="status" aria-live="polite"></p>
       <hr style="margin:28px 0;border:0;border-top:1px solid #dce6f2;">
       <h3 style="margin-top:0">Vista general de cursos y contenidos</h3>
-      <p>Consulta todos los cursos y revisa qué apuntes y ejercicios tiene cada uno, incluidos los materiales compartidos entre varios cursos.</p>
+      <p>Consulta todos los cursos y revisa qué apuntes y ejercicios tiene cada uno, incluidos los materiales compartidos entre varios cursos. Usa el botón <strong>«Ver como alumno»</strong> de cada curso para abrir la presentación habitual de la zona de alumnos, filtrada por ese curso.</p>
       <button id="admin-ver-todos-cursos" type="button" style="margin:8px 0 16px;padding:10px 16px;border:0;border-radius:8px;background:#216da8;color:#fff;font-weight:bold;cursor:pointer">Mostrar todos los cursos y contenidos</button>
       <p id="admin-resumen-mensaje" role="status" aria-live="polite"></p>
       <div id="admin-resumen-cursos" style="display:grid;gap:18px;margin-top:16px"></div>
@@ -2419,7 +2419,23 @@ async function adminVerTodosLosCursos() {
     const tarjeta = crear("section", null, "background:#fff;border:1px solid #d8e5f5;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(20,65,120,.06)");
     const cabecera = crear("div", null, "display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px");
     cabecera.appendChild(crear("h4", curso, "margin:0;color:#17365d;font-size:19px"));
-    cabecera.appendChild(crear("span", `${delCurso.length} material${delCurso.length === 1 ? "" : "es"}`, "background:#eaf2fc;color:#245da0;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700"));
+    const accionesCabecera = crear("div", null, "display:flex;align-items:center;gap:8px;flex-wrap:wrap");
+    accionesCabecera.appendChild(crear("span", `${delCurso.length} material${delCurso.length === 1 ? "" : "es"}`, "background:#eaf2fc;color:#245da0;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700"));
+    const botonVistaCurso = crear("button", "Ver como alumno", "padding:8px 12px;border:0;border-radius:8px;background:#1769d2;color:#fff;font-weight:700;cursor:pointer");
+    botonVistaCurso.type = "button";
+    botonVistaCurso.setAttribute("aria-label", `Ver la zona de alumnos del curso ${curso}`);
+    botonVistaCurso.addEventListener("click", () => {
+      const selector = document.getElementById("admin-vista-curso");
+      const botonAbrir = document.getElementById("admin-abrir-vista-alumno");
+      if (selector) selector.value = curso;
+      if (botonAbrir) botonAbrir.click();
+      else {
+        const estadoPreview = document.getElementById("admin-vista-mensaje");
+        if (estadoPreview) estadoPreview.textContent = "No se encuentra el control de vista previa. Recarga la página y vuelve a intentarlo.";
+      }
+    });
+    accionesCabecera.appendChild(botonVistaCurso);
+    cabecera.appendChild(accionesCabecera);
     tarjeta.appendChild(cabecera);
 
     const asignaturas = [
