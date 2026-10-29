@@ -928,7 +928,35 @@ header nav a {
 #nuestra-academia .academia-presentacion p { color: #35465b; font-size: 17px; line-height: 1.65; }
 #nuestra-academia .academia-presentacion button { background: #1769d2; color: #fff; border: 0; border-radius: 12px; padding: 13px 22px; font-weight: 700; cursor: pointer; }
 @media(max-width:600px) { .pantalla-asignatura { padding: 16px; } .detalle-cabecera h3 { font-size: 23px !important; } .detalle-archivos .material-asignatura { grid-template-columns: 1fr; } .detalle-archivos .material-asignatura a { justify-self: start; } #nuestra-academia .academia-presentacion { padding: 25px 18px; } #nuestra-academia h2 { font-size: 30px; } #nuestra-academia h3 { font-size: 23px; } }
-</style>
+
+    /* Aviso de consentimiento para analítica */
+    #aviso-cookies-analitica {
+      position: fixed; z-index: 99999; left: 18px; right: 18px; bottom: 18px;
+      max-width: 760px; margin: 0 auto; padding: 18px;
+      background: #fff; color: #243247; border: 1px solid #cbd7e6;
+      border-radius: 14px; box-shadow: 0 8px 32px rgba(16, 43, 80, .22);
+      font-size: 14px; line-height: 1.5;
+    }
+    #aviso-cookies-analitica h2 { margin: 0 0 8px; font-size: 18px; color: #17365d; }
+    #aviso-cookies-analitica p { margin: 0 0 12px; }
+    .botones-cookies-analitica { display: flex; gap: 10px; flex-wrap: wrap; }
+    .botones-cookies-analitica button, #abrir-config-cookies {
+      border: 1px solid #1769d2; border-radius: 8px; padding: 9px 14px;
+      cursor: pointer; font-weight: 600; font-size: 14px;
+    }
+    #aceptar-cookies-analitica { background: #1769d2; color: #fff; }
+    #rechazar-cookies-analitica { background: #fff; color: #17365d; }
+    #abrir-config-cookies {
+      position: fixed; z-index: 99998; bottom: 12px; left: 12px;
+      background: #fff; color: #17365d; box-shadow: 0 2px 10px rgba(0,0,0,.12);
+      padding: 7px 10px; font-size: 12px;
+    }
+    @media (max-width: 520px) {
+      #aviso-cookies-analitica { left: 10px; right: 10px; bottom: 10px; padding: 14px; }
+      .botones-cookies-analitica button { flex: 1; }
+    }
+
+  </style>
 <style>\n
 /* Ajuste final de la cabecera de Zona de alumnos */
 #acceso .zona-banner {
@@ -1782,7 +1810,7 @@ header nav a {
       <p id="admin-mensaje" role="status" aria-live="polite"></p>
       <hr style="margin:28px 0;border:0;border-top:1px solid #dce6f2;">
       <h3 style="margin-top:0">Vista general de cursos y contenidos</h3>
-      <p>Consulta todos los cursos y revisa qué apuntes y ejercicios tiene cada uno, incluidos los materiales compartidos entre varios cursos. Usa el botón <strong>«Ver como alumno»</strong> de cada curso para abrir la presentación habitual de la zona de alumnos, filtrada por ese curso.</p>
+      <p>Consulta todos los cursos y revisa qué apuntes y ejercicios tiene cada uno, incluidos los materiales compartidos entre varios cursos.</p>
       <button id="admin-ver-todos-cursos" type="button" style="margin:8px 0 16px;padding:10px 16px;border:0;border-radius:8px;background:#216da8;color:#fff;font-weight:bold;cursor:pointer">Mostrar todos los cursos y contenidos</button>
       <p id="admin-resumen-mensaje" role="status" aria-live="polite"></p>
       <div id="admin-resumen-cursos" style="display:grid;gap:18px;margin-top:16px"></div>
@@ -2419,23 +2447,7 @@ async function adminVerTodosLosCursos() {
     const tarjeta = crear("section", null, "background:#fff;border:1px solid #d8e5f5;border-radius:14px;padding:18px;box-shadow:0 3px 12px rgba(20,65,120,.06)");
     const cabecera = crear("div", null, "display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px");
     cabecera.appendChild(crear("h4", curso, "margin:0;color:#17365d;font-size:19px"));
-    const accionesCabecera = crear("div", null, "display:flex;align-items:center;gap:8px;flex-wrap:wrap");
-    accionesCabecera.appendChild(crear("span", `${delCurso.length} material${delCurso.length === 1 ? "" : "es"}`, "background:#eaf2fc;color:#245da0;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700"));
-    const botonVistaCurso = crear("button", "Ver como alumno", "padding:8px 12px;border:0;border-radius:8px;background:#1769d2;color:#fff;font-weight:700;cursor:pointer");
-    botonVistaCurso.type = "button";
-    botonVistaCurso.setAttribute("aria-label", `Ver la zona de alumnos del curso ${curso}`);
-    botonVistaCurso.addEventListener("click", () => {
-      const selector = document.getElementById("admin-vista-curso");
-      const botonAbrir = document.getElementById("admin-abrir-vista-alumno");
-      if (selector) selector.value = curso;
-      if (botonAbrir) botonAbrir.click();
-      else {
-        const estadoPreview = document.getElementById("admin-vista-mensaje");
-        if (estadoPreview) estadoPreview.textContent = "No se encuentra el control de vista previa. Recarga la página y vuelve a intentarlo.";
-      }
-    });
-    accionesCabecera.appendChild(botonVistaCurso);
-    cabecera.appendChild(accionesCabecera);
+    cabecera.appendChild(crear("span", `${delCurso.length} material${delCurso.length === 1 ? "" : "es"}`, "background:#eaf2fc;color:#245da0;border-radius:20px;padding:5px 10px;font-size:13px;font-weight:700"));
     tarjeta.appendChild(cabecera);
 
     const asignaturas = [
@@ -2835,5 +2847,65 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+
+<div id="aviso-cookies-analitica" role="dialog" aria-modal="true" aria-labelledby="titulo-cookies-analitica" hidden>
+  <h2 id="titulo-cookies-analitica">Preferencias de cookies</h2>
+  <p>Utilizamos Google Analytics para conocer de forma estadística cómo se utiliza esta web y mejorarla. La analítica solo se activará si aceptas. Puedes rechazarla y seguir utilizando la academia con normalidad, o cambiar tu elección más adelante desde «Configurar cookies».</p>
+  <div class="botones-cookies-analitica">
+    <button type="button" id="aceptar-cookies-analitica">Aceptar analítica</button>
+    <button type="button" id="rechazar-cookies-analitica">Rechazar analítica</button>
+  </div>
+</div>
+<button type="button" id="abrir-config-cookies" aria-label="Abrir preferencias de cookies">Configurar cookies</button>
+<script>
+(function () {
+  const GA_ID = 'G-PZ5WKNBK2Y';
+  const STORAGE_KEY = 'academia_analytics_consent';
+  const banner = document.getElementById('aviso-cookies-analitica');
+  const openButton = document.getElementById('abrir-config-cookies');
+  const acceptButton = document.getElementById('aceptar-cookies-analitica');
+  const rejectButton = document.getElementById('rechazar-cookies-analitica');
+
+  function loadGoogleAnalytics() {
+    if (window.__academiaAnalyticsLoaded) return;
+    window.__academiaAnalyticsLoaded = true;
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ window.dataLayer.push(arguments); }
+    window.gtag = gtag;
+    gtag('js', new Date());
+    gtag('config', GA_ID);
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(script);
+  }
+
+  function showBanner() { if (banner) banner.hidden = false; }
+  function hideBanner() { if (banner) banner.hidden = true; }
+
+  if (openButton) openButton.addEventListener('click', showBanner);
+  if (acceptButton) acceptButton.addEventListener('click', function () {
+    try { localStorage.setItem(STORAGE_KEY, 'accepted'); } catch (e) {}
+    hideBanner();
+    loadGoogleAnalytics();
+  });
+  if (rejectButton) rejectButton.addEventListener('click', function () {
+    try { localStorage.setItem(STORAGE_KEY, 'rejected'); } catch (e) {}
+    hideBanner();
+  });
+
+  let savedChoice = null;
+  try { savedChoice = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+  if (savedChoice === 'accepted') {
+    hideBanner();
+    loadGoogleAnalytics();
+  } else if (savedChoice === 'rejected') {
+    hideBanner();
+  } else {
+    showBanner();
+  }
+})();
+</script>
+
 </body>
 </html>
