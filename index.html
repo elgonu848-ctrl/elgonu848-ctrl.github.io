@@ -680,6 +680,10 @@ header nav a {
 #mensaje-login, #mensaje-registro { overflow-wrap: anywhere; }
 .boton-cambiar-formulario { margin-top: 12px; padding: 0; border: 0; background: transparent; color: #1769d2; font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
 .texto-ayuda-registro { color: #53647b; font-size: 14px; line-height: 1.5; }
+.consentimiento-privacidad { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid #c8d8eb; border-radius: 9px; background: #f8fbff; }
+.consentimiento-privacidad input[type="checkbox"] { width: 18px; height: 18px; flex: 0 0 18px; margin: 3px 0 0; cursor: pointer; }
+.consentimiento-privacidad label { font-weight: 400 !important; color: #26384d !important; line-height: 1.5; cursor: pointer; }
+.consentimiento-privacidad a { color: #1769d2; text-decoration: underline; }
 #contenido-alumnos { margin-top: 0; padding: 0; background: transparent; box-shadow: none; }
 #contenido-alumnos .bienvenida-alumno { display: flex; align-items: center; gap: 16px; padding: 18px 24px; margin: 0 0 28px; background: #fff; border: 1px solid #e1eaf5; border-radius: 18px; box-shadow: 0 4px 16px rgba(23,54,93,.07); }
 .avatar-alumno { display: grid; place-items: center; flex: 0 0 68px; width: 68px; height: 68px; border-radius: 50%; background: #dcecff; font-size: 34px; }
@@ -1753,6 +1757,11 @@ header nav a {
         <input type="password" id="registro-password" autocomplete="new-password" minlength="8" required>
         <label for="registro-password-confirmacion">Repite la contraseña</label>
         <input type="password" id="registro-password-confirmacion" autocomplete="new-password" minlength="8" required>
+        <div class="consentimiento-privacidad">
+          <input type="checkbox" id="acepta-privacidad" name="acepta-privacidad" required>
+          <label for="acepta-privacidad">He leído la <a href="#politica-privacidad" id="enlace-politica-privacidad">Política de privacidad</a> y he sido informado sobre el tratamiento de mis datos personales.</label>
+        </div>
+        <p class="texto-ayuda-registro">La casilla es obligatoria para enviar la solicitud de registro.</p>
         <button type="submit">Solicitar registro</button>
         <p id="mensaje-registro" role="status" aria-live="polite"></p>
       </form>
