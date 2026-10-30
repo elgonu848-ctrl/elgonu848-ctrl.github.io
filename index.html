@@ -1659,6 +1659,55 @@ header nav a {
 #admin-lista-materiales > div label { justify-self: end; }
 </style>
 
+
+<style id="revision-final-adaptacion-movil">
+/* Revisión final: evitar desbordamientos y mantener alineados los accesos en móvil */
+html, body { max-width: 100%; overflow-x: hidden; }
+body { overflow-wrap: break-word; }
+header { min-width: 0; }
+header h1 { min-width: 0; overflow-wrap: anywhere; }
+header nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 14px; }
+header nav a { margin: 0; }
+#inicio > h2,
+#inicio > .frase-portada { white-space: normal; overflow-wrap: anywhere; }
+#inicio .marca-portada h2 { overflow-wrap: anywhere; }
+#contenido-alumnos, #contenido-alumnos * { min-width: 0; }
+#contenido-alumnos .columnas-materiales { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#contenido-alumnos .panel-materiales { min-width: 0; }
+#contenido-alumnos .cabecera-materiales { min-width: 0; }
+#contenido-alumnos .cabecera-materiales > div:last-child { min-width: 0; }
+#contenido-alumnos .lista-materiales,
+#contenido-alumnos .asignaturas-acordeon,
+#contenido-alumnos .contenido-asignatura,
+#contenido-alumnos .detalle-archivos { width: 100%; max-width: 100%; min-width: 0; }
+#contenido-alumnos .detalle-archivos .material-asignatura { min-width: 0; }
+#contenido-alumnos .detalle-archivos .archivo-texto { min-width: 0; overflow-wrap: anywhere; }
+#contenido-alumnos .detalle-archivos .material-asignatura a { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+#admin-lista-materiales > div { min-width: 0; }
+#aviso-cookies-analitica { max-height: calc(100dvh - 20px); overflow-y: auto; }
+@media (max-width: 760px) {
+  header { padding: 18px 16px; justify-content: center; text-align: center; }
+  header h1 { width: 100%; font-size: 22px; }
+  header nav { width: 100%; gap: 8px 12px; }
+  header nav a { font-size: 14px; }
+  #inicio > h2 { font-size: clamp(24px, 7vw, 36px); }
+  #inicio > .frase-portada { font-size: 14px; }
+  #acceso { padding-left: 12px !important; padding-right: 12px !important; }
+  #contenido-alumnos .columnas-materiales { grid-template-columns: minmax(0, 1fr); }
+  #contenido-alumnos .panel-materiales { width: 100%; }
+  #contenido-alumnos .lista-materiales > div { grid-template-columns: minmax(0, 1fr); }
+  #contenido-alumnos .lista-materiales a { justify-self: start; max-width: 100%; white-space: normal; }
+}
+@media (max-width: 420px) {
+  header h1 { font-size: 20px; }
+  header nav { gap: 8px 10px; }
+  header nav a { font-size: 13px; }
+  #contenido-alumnos .cabecera-materiales { align-items: flex-start; }
+  #contenido-alumnos .cabecera-materiales h4 { overflow-wrap: anywhere; }
+  #aviso-cookies-analitica { left: 8px; right: 8px; bottom: 8px; padding: 12px; }
+}
+</style>
+
 </head>
 <body>
   <header>
@@ -2963,6 +3012,128 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 })();
 </script>
+
+
+<style id="correccion-adaptacion-movil-documentos">
+/* Ajuste final: tarjetas de documentos alineadas y adaptables en móvil */
+#pantalla-asignatura,
+#pantalla-asignatura * {
+  box-sizing: border-box;
+}
+#pantalla-asignatura .detalle-archivos {
+  width: 100%;
+  min-width: 0;
+}
+#pantalla-asignatura .detalle-archivos .material-asignatura {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) auto !important;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+#pantalla-asignatura .detalle-archivos .icono-archivo {
+  grid-column: 1;
+  grid-row: 1;
+}
+#pantalla-asignatura .detalle-archivos .archivo-texto {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  text-align: left !important;
+}
+#pantalla-asignatura .detalle-archivos .material-asignatura > a:last-child {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  margin: 0;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  #pantalla-asignatura {
+    width: 100%;
+    max-width: 100%;
+    margin: 8px auto 16px;
+    padding: 16px 12px !important;
+    border-radius: 16px;
+  }
+  #pantalla-asignatura .detalle-archivos .material-asignatura {
+    grid-template-columns: 30px minmax(0, 1fr) !important;
+    grid-template-rows: auto auto;
+    align-items: start;
+    column-gap: 10px;
+    row-gap: 9px;
+    padding: 13px 4px;
+  }
+  #pantalla-asignatura .detalle-archivos .icono-archivo {
+    grid-column: 1;
+    grid-row: 1;
+    width: 28px;
+    height: 34px;
+  }
+  #pantalla-asignatura .detalle-archivos .archivo-texto {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+    text-align: left !important;
+  }
+  #pantalla-asignatura .detalle-archivos .archivo-titulo {
+    font-size: 16px !important;
+    line-height: 1.3 !important;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+  #pantalla-asignatura .detalle-archivos .archivo-descripcion {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    overflow-wrap: anywhere;
+  }
+  #pantalla-asignatura .detalle-archivos .material-asignatura > a:last-child {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: start !important;
+    align-self: start;
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0 !important;
+    padding: 10px 14px;
+    white-space: normal;
+    text-align: center;
+  }
+  #pantalla-asignatura .detalle-cabecera {
+    align-items: flex-start;
+    gap: 11px;
+  }
+  #pantalla-asignatura #detalle-titulo {
+    font-size: clamp(25px, 7vw, 32px) !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere;
+  }
+  #pantalla-asignatura #detalle-subtitulo {
+    font-size: clamp(18px, 5vw, 22px) !important;
+    line-height: 1.25 !important;
+  }
+  #pantalla-asignatura #detalle-descripcion {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+  }
+}
+@media (max-width: 360px) {
+  #pantalla-asignatura {
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+  }
+  #pantalla-asignatura .detalle-archivos .material-asignatura {
+    column-gap: 8px;
+  }
+  #pantalla-asignatura .detalle-archivos .archivo-titulo {
+    font-size: 15px !important;
+  }
+}
+</style>
 
 </body>
 </html>
