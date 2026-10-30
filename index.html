@@ -2280,9 +2280,13 @@ async function cargarMateriales(cursoAlumno) {
       // se muestra inicialmente en Física. Después se podrá reasignar a Química.
       asignatura = "fisica";
     } else if (["fisica", "física"].includes(asignaturaGuardada)) {
-      asignatura = "fisica";
+      // En 2.º de Bachillerato existe una asignatura independiente de Física.
+      // En los demás cursos, el material etiquetado como Física se agrupa en Física y Química.
+      asignatura = esSegundoBachiller ? "fisica" : "fisica-quimica";
     } else if (["quimica", "química"].includes(asignaturaGuardada)) {
-      asignatura = "quimica";
+      // Una asignatura asignada como Química también debe aparecer dentro de Física y Química
+      // en 4.º ESO y 1.º Bachillerato, pero como Química independiente en 2.º Bachillerato.
+      asignatura = esSegundoBachiller ? "quimica" : "fisica-quimica";
     } else if (["tecnologia", "tecnología"].includes(asignaturaGuardada)) {
       asignatura = "tecnologia";
     } else {
