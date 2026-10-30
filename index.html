@@ -1811,7 +1811,7 @@ header nav a {
       <select id="admin-curso"><option value="">Selecciona un curso</option></select>
       <label for="admin-asignatura">Asignatura</label>
       <select id="admin-asignatura">
-        <option value="MATEMÁTICAS">Matemáticas</option><option value="FÍSICA Y QUÍMICA">Física y Química</option><option value="LENGUA">Lengua</option><option value="DIBUJO">Dibujo</option><option value="ECONOMÍA">Economía</option>
+        <option value="MATEMÁTICAS">Matemáticas</option><option value="FÍSICA Y QUÍMICA">Física y Química</option><option value="FÍSICA">Física</option><option value="QUÍMICA">Química</option><option value="TECNOLOGÍA">Tecnología</option><option value="LENGUA">Lengua</option><option value="DIBUJO">Dibujo</option><option value="ECONOMÍA">Economía</option>
       </select>
       <button id="admin-cargar" type="button">Mostrar materiales</button>
       <div id="admin-lista-materiales" style="margin-top:16px"></div>
@@ -1838,7 +1838,10 @@ header nav a {
         </div>
         <div class="asignaturas-acordeon" aria-label="Apuntes por asignatura">
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="apuntes-matematicas" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-apuntes-fisica-quimica"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-apuntes-fisica" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','fisica',this)">Física <span>＋</span></button><div class="contenido-asignatura" id="apuntes-fisica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-apuntes-quimica" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','quimica',this)">Química <span>＋</span></button><div class="contenido-asignatura" id="apuntes-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-apuntes-tecnologia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','tecnologia',this)">Tecnología <span>＋</span></button><div class="contenido-asignatura" id="apuntes-tecnologia" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="apuntes-lengua" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="apuntes-dibujo" hidden></div></div>
           <div class="bloque-asignatura asignatura-solo-bachiller" id="bloque-apuntes-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="apuntes-economia" hidden></div></div>
@@ -1855,7 +1858,10 @@ header nav a {
         </div>
         <div class="asignaturas-acordeon" aria-label="Ejercicios por asignatura">
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','matematicas',this)">Matemáticas <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-matematicas" hidden></div></div>
-          <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-ejercicios-fisica-quimica"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','fisica-quimica',this)">Física y Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-ejercicios-fisica" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','fisica',this)">Física <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-fisica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-ejercicios-quimica" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','quimica',this)">Química <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-quimica" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-ejercicios-tecnologia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','tecnologia',this)">Tecnología <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-tecnologia" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-lengua" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-dibujo" hidden></div></div>
           <div class="bloque-asignatura asignatura-solo-bachiller" id="bloque-ejercicios-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-economia" hidden></div></div>
@@ -2184,11 +2190,26 @@ header nav a {
   });
 async function cargarMateriales(cursoAlumno) {
   const tipos = ["apuntes", "ejercicios"];
-  const asignaturas = ["matematicas", "fisica-quimica", "lengua", "dibujo", "economia"];
-  const cursoVisibleEconomia = ["1 bachiller", "2 bachiller"].includes(normalizarCurso(cursoAlumno));
+  const asignaturas = ["matematicas", "fisica-quimica", "fisica", "quimica", "tecnologia", "lengua", "dibujo", "economia"];
+  const cursoNormalizado = normalizarCurso(cursoAlumno);
+  const esPrimeroBachiller = cursoNormalizado === "1 bachiller";
+  const esSegundoBachiller = cursoNormalizado === "2 bachiller";
+  const cursoVisibleEconomia = esPrimeroBachiller || esSegundoBachiller;
   ["bloque-apuntes-economia", "bloque-ejercicios-economia"].forEach(id => {
     const bloque = document.getElementById(id);
     if (bloque) bloque.hidden = !cursoVisibleEconomia;
+  });
+  ["apuntes", "ejercicios"].forEach(tipo => {
+    const visibilidad = {
+      [`bloque-${tipo}-fisica-quimica`]: !esSegundoBachiller,
+      [`bloque-${tipo}-fisica`]: esSegundoBachiller,
+      [`bloque-${tipo}-quimica`]: esSegundoBachiller,
+      [`bloque-${tipo}-tecnologia`]: esPrimeroBachiller || esSegundoBachiller
+    };
+    Object.entries(visibilidad).forEach(([id, visible]) => {
+      const bloque = document.getElementById(id);
+      if (bloque) bloque.hidden = !visible;
+    });
   });
   tipos.forEach(tipo => asignaturas.forEach(asignatura => {
     const zona = document.getElementById(`${tipo}-${asignatura}`);
@@ -2207,7 +2228,6 @@ async function cargarMateriales(cursoAlumno) {
 
   // Un material puede asignarse a varios cursos mediante la columna cursos (array).
   // Se mantiene compatibilidad con los registros antiguos que solo usan curso (texto).
-  const cursoNormalizado = normalizarCurso(cursoAlumno);
   const materialesDelCurso = (data || []).filter(material => {
     const cursosAsignados = Array.isArray(material.cursos) ? material.cursos : [];
     const coincideArray = cursosAsignados.some(curso => normalizarCurso(curso) === cursoNormalizado);
@@ -2253,7 +2273,21 @@ async function cargarMateriales(cursoAlumno) {
     const tipoOriginal = (material.tipo || "").trim().toLowerCase();
     const tipo = ["apuntes", "documentos", "documento"].includes(tipoOriginal) ? "apuntes" : tipoOriginal;
     if (!tipos.includes(tipo)) return;
-    const asignatura = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
+    const asignaturaGuardada = normalizarAsignatura(material.asignatura || "");
+    let asignatura;
+    if (esSegundoBachiller && ["fisica y quimica", "fisica-quimica", "fisicaquimica"].includes(asignaturaGuardada)) {
+      // En 2.º de Bachillerato, todo el material que estaba en Física y Química
+      // se muestra inicialmente en Física. Después se podrá reasignar a Química.
+      asignatura = "fisica";
+    } else if (["fisica", "física"].includes(asignaturaGuardada)) {
+      asignatura = "fisica";
+    } else if (["quimica", "química"].includes(asignaturaGuardada)) {
+      asignatura = "quimica";
+    } else if (["tecnologia", "tecnología"].includes(asignaturaGuardada)) {
+      asignatura = "tecnologia";
+    } else {
+      asignatura = detectarAsignatura(`${material.asignatura || ""} ${material.titulo || ""} ${material.descripcion || ""}`);
+    }
     if (!asignaturas.includes(asignatura)) return;
     const zona = document.getElementById(`${tipo}-${asignatura}`);
     if (!zona) return;
@@ -2462,13 +2496,17 @@ async function adminVerTodosLosCursos() {
     const asignaturas = [
       { nombre: "Matemáticas", claves: ["matematicas", "matemáticas"] },
       { nombre: "Física y Química", claves: ["fisica-quimica", "física y química", "fisica y quimica"] },
+      { nombre: "Física", claves: ["fisica", "física"] },
+      { nombre: "Química", claves: ["quimica", "química"] },
+      { nombre: "Tecnología", claves: ["tecnologia", "tecnología"] },
       { nombre: "Lengua", claves: ["lengua"] },
       { nombre: "Dibujo", claves: ["dibujo"] },
       { nombre: "Economía", claves: ["economia", "economía"] }
     ];
     const agrupados = new Map();
     delCurso.forEach(m => {
-      const detectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+      let detectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+      if (cursoNorm === "2 bachiller" && ["fisica y quimica", "fisica-quimica", "fisicaquimica"].includes(detectada)) detectada = "fisica";
       const claveTipo = normalizarAsignatura(m.tipo || "");
       let asignaturaNombre = "Otros / sin asignatura";
       for (const a of asignaturas) {
@@ -2538,7 +2576,10 @@ async function adminCargarMateriales() {
   adminMaterialesActuales = (materiales || []).filter(m => {
     const cursos = Array.isArray(m.cursos) ? m.cursos : [];
     const asignado = normalizarCurso(m.curso) === normalizarCurso(curso) || cursos.some(c => normalizarCurso(c) === normalizarCurso(curso)) || normalizarCurso(m.curso) === "todos" || cursos.some(c => normalizarCurso(c) === "todos");
-    const asignaturaDetectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+    let asignaturaDetectada = normalizarAsignatura(m.asignatura || detectarAsignatura(`${m.titulo || ""} ${m.descripcion || ""}`));
+    if (normalizarCurso(curso) === "2 bachiller" && ["fisica y quimica", "fisica-quimica", "fisicaquimica"].includes(asignaturaDetectada)) {
+      asignaturaDetectada = "fisica";
+    }
     const tipoOriginal = normalizarAsignatura(m.tipo || "");
     return asignado && asignaturaDetectada === normalizarAsignatura(asignatura) && ["apuntes", "documentos", "documento", "ejercicios", "ejercicio"].includes(tipoOriginal);
   }).sort((a,b) => {
@@ -2671,7 +2712,10 @@ function normalizarAsignatura(asignatura) {
 function detectarAsignatura(texto) {
   const t = (texto || "").toLocaleLowerCase("es").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   if (/\b(matematicas?|algebra|ecuaciones?|fracciones?|aritmetica|calculo|porcentajes?|numeros?)\b/.test(t)) return "matematicas";
-  if (/\b(fisica|quimica|fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
+  if (/\b(tecnologia|tecnologico|tecnologica|robotica|programacion)\b/.test(t)) return "tecnologia";
+  if (/\b(fisica)\b/.test(t)) return "fisica";
+  if (/\b(quimica)\b/.test(t)) return "quimica";
+  if (/\b(fisicoquimica|formulas?|reacciones?|atomos?|fuerzas?|energia|movimiento|materia)\b/.test(t)) return "fisica-quimica";
   if (/\b(lengua|gramatica|sintaxis|sintactic[oa]s?|analisis|ortografia|literatura|lectura|redaccion|verbos?|adjetivos?|oraciones?|compuestas?)\b/.test(t)) return "lengua";
   if (/\b(dibujo|geometria|dibujo tecnico|perspectiva|laminas?|trazados?)\b/.test(t)) return "dibujo";
   if (/\b(economia|economicas?|microeconomia|macroeconomia)\b/.test(t)) return "economia";
@@ -2679,7 +2723,7 @@ function detectarAsignatura(texto) {
 }
 
 function abrirAsignatura(tipo, asignatura, boton) {
-  const nombres = { matematicas: 'Matemáticas', 'fisica-quimica': 'Física y Química', lengua: 'Lengua', dibujo: 'Dibujo', economia: 'Economía' };
+  const nombres = { matematicas: 'Matemáticas', 'fisica-quimica': 'Física y Química', fisica: 'Física', quimica: 'Química', tecnologia: 'Tecnología', lengua: 'Lengua', dibujo: 'Dibujo', economia: 'Economía' };
   const nombre = nombres[asignatura] || asignatura;
   const etiquetaTipo = tipo === 'apuntes' ? 'Apuntes y documentos' : 'Ejercicios';
   const origen = document.getElementById(`${tipo}-${asignatura}`);
