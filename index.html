@@ -2074,7 +2074,7 @@ header nav a {
 
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
-      mensaje.textContent = "No se ha podido iniciar sesión. Comprueba el correo y la contraseña y, si acabas de registrarte, confirma tu correo electrónico.";
+      mensaje.textContent = "No se ha podido iniciar sesión. Comprueba que el correo y la contraseña sean correctos y que tu cuenta haya sido aprobada por la academia.";
       console.error("Error de inicio de sesión:", error);
       return;
     }
@@ -2160,7 +2160,7 @@ header nav a {
       await supabaseClient.auth.signOut();
     }
     mostrarFormularioRegistro(false);
-    mensaje.textContent = "Solicitud enviada. Si recibes un correo de confirmación, verifica tu dirección. Tu cuenta quedará pendiente de aprobación por la academia antes de acceder a los materiales.";
+    mensaje.textContent = "¡Solicitud enviada correctamente! Tu cuenta está pendiente de revisión por Academia Orihuela Centro. Cuando tu solicitud sea aprobada, podrás iniciar sesión y acceder a los materiales de tu curso.";
   });
 
   botonCerrar.addEventListener("click", async function() {
