@@ -3135,5 +3135,54 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 </style>
 
+
+<style id="alineacion-izquierda-movil-final">
+/* En móviles: cada material se lee de arriba abajo y todo queda alineado a la izquierda */
+@media (max-width: 600px) {
+  #pantalla-asignatura .detalle-archivos .material-asignatura {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    padding: 16px 12px !important;
+    text-align: left !important;
+  }
+
+  #pantalla-asignatura .detalle-archivos .icono-archivo {
+    display: none !important;
+  }
+
+  #pantalla-asignatura .detalle-archivos .archivo-texto {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    align-self: flex-start !important;
+  }
+
+  #pantalla-asignatura .detalle-archivos .archivo-titulo,
+  #pantalla-asignatura .detalle-archivos .archivo-descripcion {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 6px !important;
+    padding: 0 !important;
+    text-align: left !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #pantalla-asignatura .detalle-archivos .material-asignatura > a:last-child {
+    display: inline-block !important;
+    align-self: flex-start !important;
+    margin: 4px 0 0 !important;
+    padding: 10px 16px !important;
+    max-width: 100% !important;
+    text-align: left !important;
+    white-space: normal !important;
+  }
+}
+</style>
+
 </body>
 </html>
