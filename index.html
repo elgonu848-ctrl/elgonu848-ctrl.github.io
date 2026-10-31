@@ -2268,7 +2268,7 @@ async function cargarMateriales(cursoAlumno) {
   const { data, error } = await supabaseClient
     .from("materiales")
     .select("id, titulo, descripcion, tipo, url, curso, cursos, asignatura")
-    .order("created_at", { ascending: false });
+    .order("titulo", { ascending: true });
 
   if (error) {
     console.error("Error al cargar materiales:", error);
@@ -2285,12 +2285,13 @@ async function cargarMateriales(cursoAlumno) {
     return coincideArray || coincideCursoAntiguo || asignadoATodos;
   });
 
-  // Leer el orden personalizado para el curso del alumno. Si no hay posición
-  // configurada, se conserva el orden original por fecha de subida.
-  const { data: ordenes } = await supabaseClient
+  // Leer el orden personalizado guardado para el curso del alumno.
+  // Los materiales sin posición guardada quedan en orden alfabético, nunca por fecha de subida.
+  const { data: ordenes, error: errorOrden } = await supabaseClient
     .from("orden_materiales")
     .select("material_id, curso, asignatura, posicion")
     .eq("curso", cursoAlumno);
+  if (errorOrden) console.error("No se pudo leer el orden personalizado:", errorOrden);
   // Cada material tiene un único ID. Usarlo como clave evita que diferencias
   // de formato en el curso o la asignatura impidan recuperar la posición guardada.
   const mapaOrden = new Map((ordenes || []).map(o => [
@@ -2621,7 +2622,7 @@ async function adminCargarMateriales() {
   lista.replaceChildren();
   if (!curso) { adminMensaje.textContent = "Selecciona un curso."; return; }
   adminMensaje.textContent = "Cargando materiales...";
-  const { data: materiales, error } = await supabaseClient.from("materiales").select("id,titulo,descripcion,tipo,curso,cursos,asignatura,created_at").order("created_at", {ascending:true});
+  const { data: materiales, error } = await supabaseClient.from("materiales").select("id,titulo,descripcion,tipo,curso,cursos,asignatura").order("titulo", {ascending:true});
   if (error) { adminMensaje.textContent = "No se pudieron cargar los materiales."; return; }
   const { data: ordenes, error: errorOrden } = await supabaseClient.from("orden_materiales").select("material_id,curso,asignatura,posicion").eq("curso", curso).eq("asignatura", asignatura);
   if (errorOrden) { adminMensaje.textContent = "No se pudieron leer los órdenes guardados. Revisa las políticas de orden_materiales."; return; }
@@ -2640,7 +2641,9 @@ async function adminCargarMateriales() {
     const tipoB = ["apuntes", "documentos", "documento"].includes(normalizarAsignatura(b.tipo || "")) ? 0 : 1;
     const pa = mapa.has(Number(a.id)) ? mapa.get(Number(a.id)) : Number.MAX_SAFE_INTEGER;
     const pb = mapa.has(Number(b.id)) ? mapa.get(Number(b.id)) : Number.MAX_SAFE_INTEGER;
-    return tipoA - tipoB || pa - pb || new Date(a.created_at || 0) - new Date(b.created_at || 0);
+    const tituloA = (a.titulo || `Material ${a.id}`).toLocaleLowerCase("es");
+    const tituloB = (b.titulo || `Material ${b.id}`).toLocaleLowerCase("es");
+    return tipoA - tipoB || pa - pb || tituloA.localeCompare(tituloB, "es", { numeric: true });
   });
   if (!adminMaterialesActuales.length) { adminMensaje.textContent = "No hay materiales de esa asignatura asignados a este curso."; botonGuardar.hidden = true; return; }
   let tipoAnterior = "";
