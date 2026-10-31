@@ -2659,6 +2659,7 @@ async function adminCargarMateriales() {
       tipoAnterior = tipoGrupo;
     }
     const fila = document.createElement("div");
+    fila.dataset.tipoGrupo = tipoGrupo;
     fila.style.cssText = "display:grid;width:100%;min-width:0;grid-template-columns:minmax(0,1fr) 58px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #e4ebf4;box-sizing:border-box";
     const titulo = document.createElement("div");
     titulo.textContent = m.titulo || `Material ${m.id}`;
@@ -2675,8 +2676,39 @@ async function adminCargarMateriales() {
     input.setAttribute("aria-label", `Posición de ${m.titulo || m.id}`);
     etiqueta.appendChild(input); fila.append(titulo, etiqueta); lista.appendChild(fila);
   });
+  // Al cambiar una posición, mueve ese documento dentro de su bloque y ajusta
+  // únicamente las posiciones necesarias de los documentos que quedan entre medias.
+  lista.querySelectorAll("input[data-material-id]").forEach(input => {
+    input.addEventListener("change", () => {
+      const filaObjetivo = input.closest("[data-tipo-grupo]");
+      if (!filaObjetivo) return;
+      const grupo = filaObjetivo.dataset.tipoGrupo;
+      const filas = [...lista.querySelectorAll(`[data-tipo-grupo="${grupo}"]`)];
+      const posicionSolicitada = Number(input.value);
+      if (!Number.isInteger(posicionSolicitada) || posicionSolicitada < 1) return;
+      const indiceAnterior = filas.indexOf(filaObjetivo);
+      const indiceNuevo = Math.min(posicionSolicitada - 1, filas.length - 1);
+      if (indiceAnterior < 0 || indiceNuevo < 0) return;
+
+      filas.splice(indiceAnterior, 1);
+      filas.splice(indiceNuevo, 0, filaObjetivo);
+
+      // Reinsertar antes de la cabecera del siguiente bloque conserva separados
+      // Apuntes y documentos de Ejercicios.
+      const cabeceraSiguiente = [...lista.children].find(el =>
+        el.textContent.trim() === (grupo === "apuntes" ? "✏️ Ejercicios" : "📘 Apuntes y documentos")
+      );
+      filas.forEach(fila => lista.insertBefore(fila, cabeceraSiguiente || null));
+      filas.forEach((fila, indice) => {
+        const campoPosicion = fila.querySelector("input[data-material-id]");
+        if (campoPosicion) campoPosicion.value = indice + 1;
+      });
+      adminMensaje.textContent = "Orden actualizado en pantalla. Pulsa «Guardar orden» para guardar los cambios.";
+    });
+  });
+
   botonGuardar.hidden = false;
-  adminMensaje.textContent = `Se muestran ${adminMaterialesActuales.length} materiales. Ajusta las posiciones y guarda.`;
+  adminMensaje.textContent = `Se muestran ${adminMaterialesActuales.length} materiales. Cambia una posición para recolocar el documento automáticamente y guarda los cambios.`;
 }
 
 async function adminGuardarOrden() {
