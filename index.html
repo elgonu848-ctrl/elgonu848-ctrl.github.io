@@ -2859,12 +2859,14 @@ function abrirAsignatura(tipo, asignatura, boton) {
     }
   }
 
+  // Ocultar completamente las dos tarjetas principales mientras se muestra
+  // la pantalla individual. !important evita que reglas responsive las reactiven.
   columnas.hidden = true;
-  columnas.style.display = 'none';
+  columnas.style.setProperty('display', 'none', 'important');
   titulo.hidden = true;
-  titulo.style.display = 'none';
+  titulo.style.setProperty('display', 'none', 'important');
   pantalla.hidden = false;
-  pantalla.style.display = 'block';
+  pantalla.style.setProperty('display', 'block', 'important');
   window.scrollTo(0, 0);
 }
 
@@ -2877,9 +2879,9 @@ function volverAMisAsignaturas() {
     banner.hidden = false;
     banner.style.removeProperty('display');
   }
-  if (pantalla) { pantalla.hidden = true; pantalla.style.display = 'none'; }
-  if (columnas) { columnas.hidden = false; columnas.style.display = ''; }
-  if (titulo) { titulo.hidden = false; titulo.style.display = ''; }
+  if (pantalla) { pantalla.hidden = true; pantalla.style.setProperty('display', 'none', 'important'); }
+  if (columnas) { columnas.hidden = false; columnas.style.removeProperty('display'); }
+  if (titulo) { titulo.hidden = false; titulo.style.removeProperty('display'); }
   window.scrollTo(0, 0);
 }
 
