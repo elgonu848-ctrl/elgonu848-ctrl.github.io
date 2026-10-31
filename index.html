@@ -3136,51 +3136,64 @@ document.addEventListener("DOMContentLoaded", () => {
 </style>
 
 
-<style id="alineacion-izquierda-movil-final">
-/* En móviles: cada material se lee de arriba abajo y todo queda alineado a la izquierda */
+
+<style id="ajuste-movil-alineacion-final">
+/* Ajustes específicos para móviles: bienvenida y documentos alineados a la izquierda */
 @media (max-width: 600px) {
-  #pantalla-asignatura .detalle-archivos .material-asignatura {
+  #acceso { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; padding: 12px 10px 28px !important; }
+  #contenido-alumnos { width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box !important; }
+
+  /* Saludo: evita que el nombre se comprima en una columna estrecha */
+  #contenido-alumnos .bienvenida-alumno {
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    gap: 8px !important;
-    padding: 16px 12px !important;
-    text-align: left !important;
-  }
-
-  #pantalla-asignatura .detalle-archivos .icono-archivo {
-    display: none !important;
-  }
-
-  #pantalla-asignatura .detalle-archivos .archivo-texto {
+    align-items: stretch !important;
+    gap: 12px !important;
     width: 100% !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    box-sizing: border-box !important;
+    padding: 18px 16px !important;
     text-align: left !important;
-    align-self: flex-start !important;
   }
+  #contenido-alumnos .avatar-alumno { display: none !important; }
+  #contenido-alumnos .saludo-alumno { width: 100% !important; min-width: 0 !important; flex: none !important; }
+  #contenido-alumnos .saludo-alumno h3 {
+    width: 100% !important; font-size: 25px !important; line-height: 1.25 !important;
+    overflow-wrap: anywhere !important; word-break: normal !important; text-align: left !important;
+  }
+  #contenido-alumnos .saludo-alumno p { width: 100% !important; font-size: 16px !important; line-height: 1.45 !important; text-align: left !important; }
+  #contenido-alumnos .curso-alumno { width: 100% !important; min-width: 0 !important; box-sizing: border-box !important; margin: 0 !important; justify-content: flex-start !important; }
+  #contenido-alumnos .curso-alumno strong { overflow-wrap: anywhere !important; }
+  #contenido-alumnos #cerrar-sesion { align-self: flex-start !important; margin: 0 !important; white-space: normal !important; }
 
-  #pantalla-asignatura .detalle-archivos .archivo-titulo,
-  #pantalla-asignatura .detalle-archivos .archivo-descripcion {
-    display: block !important;
-    width: 100% !important;
-    margin: 0 0 6px !important;
-    padding: 0 !important;
-    text-align: left !important;
-    overflow-wrap: anywhere !important;
+  /* Tarjetas y listados de documentos: una sola columna y todo al mismo margen */
+  #contenido-alumnos .columnas-materiales { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 14px !important; }
+  #contenido-alumnos .panel-materiales { width: 100% !important; min-width: 0 !important; box-sizing: border-box !important; padding: 14px 12px !important; }
+  #contenido-alumnos .cabecera-materiales { display: block !important; min-height: 0 !important; margin: 0 0 12px !important; text-align: left !important; }
+  #contenido-alumnos .icono-material { display: none !important; }
+  #contenido-alumnos .cabecera-materiales h4,
+  #contenido-alumnos .cabecera-materiales p { text-align: left !important; margin-left: 0 !important; }
+  #contenido-alumnos .lista-materiales { width: 100% !important; min-width: 0 !important; }
+  #contenido-alumnos .lista-materiales > div {
+    display: flex !important; flex-direction: column !important; align-items: flex-start !important;
+    gap: 8px !important; width: 100% !important; min-width: 0 !important;
+    box-sizing: border-box !important; padding: 12px 0 !important; margin: 0 !important;
   }
+  #contenido-alumnos .lista-materiales > div > *,
+  #contenido-alumnos .lista-materiales p { margin-left: 0 !important; text-align: left !important; }
+  #contenido-alumnos .lista-materiales a { align-self: flex-start !important; justify-self: start !important; margin: 0 !important; white-space: normal !important; }
 
-  #pantalla-asignatura .detalle-archivos .material-asignatura > a:last-child {
-    display: inline-block !important;
-    align-self: flex-start !important;
-    margin: 4px 0 0 !important;
-    padding: 10px 16px !important;
-    max-width: 100% !important;
-    text-align: left !important;
-    white-space: normal !important;
+  /* Listado detallado de archivos: quitar columna del icono y alinear texto y botón */
+  #contenido-alumnos .detalle-archivos .material-asignatura {
+    display: flex !important; flex-direction: column !important; align-items: flex-start !important;
+    gap: 7px !important; width: 100% !important; min-width: 0 !important;
+    box-sizing: border-box !important; padding: 12px 0 !important; margin: 0 !important;
   }
+  #contenido-alumnos .detalle-archivos .icono-archivo { display: none !important; }
+  #contenido-alumnos .detalle-archivos .archivo-texto { display: flex !important; width: 100% !important; min-width: 0 !important; margin: 0 !important; text-align: left !important; }
+  #contenido-alumnos .detalle-archivos .archivo-titulo,
+  #contenido-alumnos .detalle-archivos .archivo-descripcion { width: 100% !important; text-align: left !important; overflow-wrap: anywhere !important; }
+  #contenido-alumnos .detalle-archivos .material-asignatura a { align-self: flex-start !important; justify-self: start !important; margin: 0 !important; white-space: normal !important; }
+  #contenido-alumnos .asignaturas-acordeon button { text-align: left !important; }
 }
 </style>
 
