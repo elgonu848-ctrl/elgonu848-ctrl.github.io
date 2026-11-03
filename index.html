@@ -2325,10 +2325,10 @@ async function cargarMateriales(cursoAlumno) {
     if (!tipos.includes(tipo)) return;
     const asignaturaGuardada = normalizarAsignatura(material.asignatura || "");
     let asignatura;
-    if (esSegundoBachiller && ["fisica y quimica", "fisica-quimica", "fisicaquimica"].includes(asignaturaGuardada)) {
-      // En 2.º de Bachillerato, todo el material que estaba en Física y Química
-      // se muestra inicialmente en Física. Después se podrá reasignar a Química.
-      asignatura = "fisica";
+    if (["fisica y quimica", "fisica-quimica", "fisicaquimica"].includes(asignaturaGuardada)) {
+      // En 1.º de Bachillerato y ESO se muestra en el bloque conjunto Física y Química.
+      // En 2.º de Bachillerato se muestra inicialmente en Física.
+      asignatura = esSegundoBachiller ? "fisica" : "fisica-quimica";
     } else if (["fisica", "física"].includes(asignaturaGuardada)) {
       // En 2.º de Bachillerato existe una asignatura independiente de Física.
       // En los demás cursos, el material etiquetado como Física se agrupa en Física y Química.
