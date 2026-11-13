@@ -895,6 +895,24 @@ header nav a {
 .ruta-asignatura { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin: 0 0 20px; color: #075fc5; font-size: 13px; }
 .ruta-asignatura span { margin: 0; }
 .detalle-cabecera { display: flex; align-items: center; gap: 18px; margin-bottom: 18px; }
+.detalle-titulos { min-width: 0; flex: 1; }
+.volver-superior {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 10px 17px;
+  border: 1px solid #1769d2;
+  border-radius: 24px;
+  background: #fff;
+  color: #075fc5;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, transform .15s ease;
+}
+.volver-superior:hover { background: #eef6ff; transform: translateY(-1px); }
+.volver-superior:focus-visible { outline: 3px solid #8bbcff; outline-offset: 2px; }
 .detalle-icono { display: grid; place-items: center; flex: 0 0 60px; width: 60px; height: 60px; border-radius: 14px; background: #0878ed; color: #fff; font-size: 29px; }
 .detalle-cabecera h3 { margin: 0 0 2px !important; font-size: 30px !important; line-height: 1.15; color: #17365d !important; }
 .detalle-cabecera h4 { margin: 0 0 4px !important; font-size: 19px !important; line-height: 1.2; color: #075fc5 !important; }
@@ -914,7 +932,9 @@ header nav a {
 @media (max-width: 620px) {
   .pantalla-asignatura { width: 100%; padding: 18px 15px 16px; margin: 10px auto 20px; }
   .ruta-asignatura { font-size: 12px; margin-bottom: 16px; }
-  .detalle-cabecera { gap: 12px; align-items: flex-start; }
+  .detalle-cabecera { gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .detalle-titulos { flex: 1 1 calc(100% - 64px); }
+  .volver-superior { margin-left: 62px; margin-top: 2px; }
   .detalle-icono { flex-basis: 50px; width: 50px; height: 50px; font-size: 25px; }
   .detalle-cabecera h3 { font-size: 25px !important; }
   .detalle-cabecera h4 { font-size: 17px !important; }
@@ -1925,7 +1945,12 @@ header nav a { margin: 0; }
       <div class="ruta-asignatura">⌂ <span>Mis asignaturas</span> › <span id="ruta-tipo">Apuntes y documentos</span> › <strong id="ruta-nombre">Matemáticas</strong></div>
       <div class="detalle-cabecera">
         <div class="detalle-icono" id="detalle-icono">▦</div>
-        <div><h3 id="detalle-titulo">Matemáticas</h3><h4 id="detalle-subtitulo">Apuntes y documentos</h4><p id="detalle-descripcion">Aquí puedes ver todos los archivos de esta asignatura.</p></div>
+        <div class="detalle-titulos">
+          <h3 id="detalle-titulo">Matemáticas</h3>
+          <h4 id="detalle-subtitulo">Apuntes y documentos</h4>
+          <p id="detalle-descripcion">Aquí puedes ver todos los archivos de esta asignatura.</p>
+        </div>
+        <button type="button" class="volver-superior" onclick="volverAMisAsignaturas()" aria-label="Volver a mis asignaturas">← Volver</button>
       </div>
       <div id="detalle-archivos" class="detalle-archivos"></div>
       <button type="button" class="volver-asignaturas" onclick="volverAMisAsignaturas()">← Volver a Mis asignaturas</button>
