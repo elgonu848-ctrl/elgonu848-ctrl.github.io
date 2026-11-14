@@ -1874,6 +1874,13 @@ header nav a { margin: 0; }
         <button id="admin-abrir-vista-alumno" type="button" style="padding:10px 16px;border:0;border-radius:8px;background:#1769d2;color:#fff;font-weight:bold;cursor:pointer;">Ver como alumno</button>
         <p id="admin-vista-mensaje" role="status" aria-live="polite" style="margin:10px 0 0;"></p>
       </div>
+      <div style="padding:16px;margin:0 0 24px;background:#f0faf5;border:1px solid #c8ead8;border-radius:12px;">
+        <h3 style="margin:0 0 8px;color:#126746;">Actividad de los alumnos</h3>
+        <p style="margin:0 0 12px;color:#415875;">Consulta qué alumnos han utilizado la zona privada, cuándo entraron por última vez y qué asignaturas o documentos han consultado.</p>
+        <button id="admin-ver-actividad" type="button" style="padding:10px 16px;border:0;border-radius:8px;background:#16805d;color:#fff;font-weight:bold;cursor:pointer;">Consultar actividad</button>
+        <p id="admin-actividad-mensaje" role="status" aria-live="polite" style="margin:10px 0 0;"></p>
+        <div id="admin-actividad-resumen" style="overflow-x:auto;margin-top:12px;"></div>
+      </div>
       <h3 style="margin-top:0">Administrar orden de materiales</h3>
       <p>Elige el curso y la asignatura. Cambia los números de posición y pulsa Guardar orden.</p>
       <label for="admin-curso">Curso</label>
@@ -2073,6 +2080,29 @@ header nav a { margin: 0; }
     if (contenido) contenido.style.display = autenticado ? 'block' : 'none';
   }
 
+  // Registro privado de actividad: las políticas RLS de Supabase limitan la lectura al administrador.
+  let contextoAlumnoActividad = null;
+  async function registrarActividadAlumno(evento, detalle = "") {
+    if (!contextoAlumnoActividad?.user_id) return;
+    const { error } = await supabaseClient.from("actividad_alumnos").insert({
+      user_id: contextoAlumnoActividad.user_id,
+      nombre: contextoAlumnoActividad.nombre || null,
+      curso: contextoAlumnoActividad.curso || null,
+      evento,
+      detalle: (detalle || "").slice(0, 250)
+    });
+    if (error) console.warn("No se pudo registrar la actividad del alumno:", error.message);
+  }
+
+  function prepararSeguimientoAlumno(userId, alumno) {
+    contextoAlumnoActividad = {
+      user_id: userId,
+      nombre: alumno?.nombre || "",
+      curso: alumno?.curso || ""
+    };
+    registrarActividadAlumno("acceso", "Entrada en la zona privada");
+  }
+
   function mostrarFormularioRegistro(mostrar) {
     if (panelRegistro) {
       panelRegistro.hidden = !mostrar;
@@ -2140,6 +2170,7 @@ header nav a { margin: 0; }
 
     actualizarBienvenida(alumno.nombre);
     document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
+    prepararSeguimientoAlumno(sesion.user.id, alumno);
     mostrarZonaPrivada(true);
     await cargarMateriales(alumno.curso);
   }
@@ -2195,6 +2226,7 @@ header nav a { margin: 0; }
     actualizarBienvenida(alumno.nombre);
     document.getElementById("curso-alumno").textContent = alumno.curso || "Sin curso asignado";
     mensaje.textContent = "";
+    prepararSeguimientoAlumno(data.user.id, alumno);
     mostrarZonaPrivada(true);
     await cargarMateriales(alumno.curso);
   });
@@ -2250,6 +2282,7 @@ header nav a { margin: 0; }
       return;
     }
     mostrarZonaPrivada(false);
+    contextoAlumnoActividad = null;
     if (panelAdmin) { panelAdmin.hidden = true; panelAdmin.style.display = "none"; }
     vistaPreviaAdministradorActiva = false;
     const barraSalida = document.getElementById("barra-salir-vista-alumno");
@@ -2635,6 +2668,58 @@ async function adminVerTodosLosCursos() {
   estado.textContent = `Se muestran ${cursosOrdenados.length} cursos y ${totalAsignaciones} asignaciones de materiales. Los materiales compartidos pueden aparecer en más de un curso.`;
 }
 
+document.getElementById("admin-ver-actividad")?.addEventListener("click", adminVerActividadAlumnos);
+
+async function adminVerActividadAlumnos() {
+  const estado = document.getElementById("admin-actividad-mensaje");
+  const contenedor = document.getElementById("admin-actividad-resumen");
+  if (!estado || !contenedor) return;
+  estado.textContent = "Consultando actividad...";
+  contenedor.replaceChildren();
+
+  const { data: eventos, error } = await supabaseClient
+    .from("actividad_alumnos")
+    .select("user_id, nombre, curso, evento, detalle, created_at")
+    .order("created_at", { ascending: false })
+    .limit(1500);
+  if (error) {
+    console.error("Error al consultar actividad:", error);
+    estado.textContent = "No se pudo consultar la actividad. Ejecuta primero el SQL de configuración en Supabase y comprueba sus políticas RLS.";
+    return;
+  }
+  if (!eventos?.length) {
+    estado.textContent = "Todavía no hay actividad registrada. Los accesos y consultas se empezarán a registrar desde que actives esta función.";
+    return;
+  }
+
+  const grupos = new Map();
+  eventos.forEach(e => {
+    if (!grupos.has(e.user_id)) grupos.set(e.user_id, []);
+    grupos.get(e.user_id).push(e);
+  });
+
+  const tabla = document.createElement("table");
+  tabla.style.cssText = "width:100%;border-collapse:collapse;min-width:680px;background:#fff;font-size:14px;";
+  const thead = document.createElement("thead");
+  thead.innerHTML = `<tr style="background:#eaf3ff;text-align:left"><th style="padding:10px;border-bottom:1px solid #d8e5f5">Alumno</th><th style="padding:10px;border-bottom:1px solid #d8e5f5">Curso</th><th style="padding:10px;border-bottom:1px solid #d8e5f5">Último acceso</th><th style="padding:10px;border-bottom:1px solid #d8e5f5">Eventos</th><th style="padding:10px;border-bottom:1px solid #d8e5f5">Última actividad</th></tr>`;
+  tabla.appendChild(thead);
+  const tbody = document.createElement("tbody");
+  const formatoFecha = valor => valor ? new Date(valor).toLocaleString("es-ES", { dateStyle:"short", timeStyle:"short" }) : "—";
+  [...grupos.entries()].sort((a,b) => new Date(b[1][0].created_at) - new Date(a[1][0].created_at)).forEach(([uid, lista]) => {
+    const ficha = lista.find(e => e.nombre || e.curso) || lista[0];
+    const ultimoAcceso = lista.find(e => e.evento === "acceso") || lista[0];
+    const ultima = lista[0];
+    const tr = document.createElement("tr");
+    tr.style.borderBottom = "1px solid #e5edf6";
+    const valores = [ficha?.nombre || "Alumno sin nombre", ficha?.curso || "—", formatoFecha(ultimoAcceso?.created_at), String(lista.length), `${ultima.evento === "asignatura" ? "Asignatura" : ultima.evento === "documento" ? "Documento" : "Acceso"}: ${ultima.detalle || "Entrada en la zona privada"} · ${formatoFecha(ultima.created_at)}`];
+    valores.forEach(v => { const td = document.createElement("td"); td.textContent = v; td.style.cssText = "padding:10px;vertical-align:top;"; tr.appendChild(td); });
+    tbody.appendChild(tr);
+  });
+  tabla.appendChild(tbody);
+  contenedor.appendChild(tabla);
+  estado.textContent = `Se muestran ${grupos.size} alumnos con actividad registrada y ${eventos.length} eventos recientes. Solo se registran datos desde la activación del seguimiento.`;
+}
+
 document.getElementById("admin-cargar")?.addEventListener("click", adminCargarMateriales);
 document.getElementById("admin-guardar-orden")?.addEventListener("click", adminGuardarOrden);
 
@@ -2839,6 +2924,7 @@ function abrirAsignatura(tipo, asignatura, boton) {
   const nombres = { matematicas: 'Matemáticas', 'fisica-quimica': 'Física y Química', fisica: 'Física', quimica: 'Química', tecnologia: 'Tecnología', lengua: 'Lengua', dibujo: 'Dibujo', economia: 'Economía' };
   const nombre = nombres[asignatura] || asignatura;
   const etiquetaTipo = tipo === 'apuntes' ? 'Apuntes y documentos' : 'Ejercicios';
+  registrarActividadAlumno("asignatura", `${etiquetaTipo}: ${nombre}`);
   const origen = document.getElementById(`${tipo}-${asignatura}`);
   const pantalla = document.getElementById('pantalla-asignatura');
   const columnas = document.querySelector('#contenido-alumnos .columnas-materiales');
@@ -2907,6 +2993,7 @@ function abrirAsignatura(tipo, asignatura, boton) {
       descargar.target = '_blank';
       descargar.rel = 'noopener noreferrer';
       descargar.setAttribute('aria-label', `Descargar ${tituloArchivo}`);
+      descargar.addEventListener('click', () => registrarActividadAlumno("documento", `${nombre} · ${tituloArchivo}`));
 
       fila.append(icono, texto, descargar);
       archivos.appendChild(fila);
