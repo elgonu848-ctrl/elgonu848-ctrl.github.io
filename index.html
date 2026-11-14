@@ -1880,6 +1880,7 @@ header nav a { margin: 0; }
         <button id="admin-ver-actividad" type="button" style="padding:10px 16px;border:0;border-radius:8px;background:#16805d;color:#fff;font-weight:bold;cursor:pointer;">Consultar actividad</button>
         <p id="admin-actividad-mensaje" role="status" aria-live="polite" style="margin:10px 0 0;"></p>
         <div id="admin-actividad-resumen" style="overflow-x:auto;margin-top:12px;"></div>
+        <div id="admin-actividad-ficha" style="margin-top:16px;"></div>
       </div>
       <h3 style="margin-top:0">Administrar orden de materiales</h3>
       <p>Elige el curso y la asignatura. Cambia los números de posición y pulsa Guardar orden.</p>
@@ -2712,13 +2713,105 @@ async function adminVerActividadAlumnos() {
     const tr = document.createElement("tr");
     tr.style.borderBottom = "1px solid #e5edf6";
     const valores = [ficha?.nombre || "Alumno sin nombre", ficha?.curso || "—", formatoFecha(ultimoAcceso?.created_at), String(lista.length), `${ultima.evento === "asignatura" ? "Asignatura" : ultima.evento === "documento" ? "Documento" : "Acceso"}: ${ultima.detalle || "Entrada en la zona privada"} · ${formatoFecha(ultima.created_at)}`];
-    valores.forEach(v => { const td = document.createElement("td"); td.textContent = v; td.style.cssText = "padding:10px;vertical-align:top;"; tr.appendChild(td); });
+    valores.forEach((v, indice) => {
+      const td = document.createElement("td");
+      td.style.cssText = "padding:10px;vertical-align:top;";
+      if (indice === 0) {
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.className = "admin-actividad-ver-ficha";
+        boton.dataset.userId = uid;
+        boton.textContent = v;
+        boton.style.cssText = "padding:0;border:0;background:none;color:#145db5;text-decoration:underline;font:inherit;font-weight:700;cursor:pointer;text-align:left;";
+        td.appendChild(boton);
+      } else {
+        td.textContent = v;
+      }
+      tr.appendChild(td);
+    });
     tbody.appendChild(tr);
   });
   tabla.appendChild(tbody);
   contenedor.appendChild(tabla);
-  estado.textContent = `Se muestran ${grupos.size} alumnos con actividad registrada y ${eventos.length} eventos recientes. Solo se registran datos desde la activación del seguimiento.`;
+  const fichaContenedor = document.getElementById("admin-actividad-ficha");
+  if (fichaContenedor) fichaContenedor.replaceChildren();
+  estado.textContent = `Se muestran ${grupos.size} alumnos con actividad registrada y ${eventos.length} eventos recientes. Pulsa sobre el nombre de un alumno para consultar su historial. Solo se registran datos desde la activación del seguimiento.`;
 }
+
+// Historial individual: solo lo consulta el administrador mediante las políticas RLS de Supabase.
+document.getElementById("admin-actividad-resumen")?.addEventListener("click", async (event) => {
+  const boton = event.target.closest(".admin-actividad-ver-ficha");
+  if (!boton) return;
+  const userId = boton.dataset.userId;
+  const ficha = document.getElementById("admin-actividad-ficha");
+  const estado = document.getElementById("admin-actividad-mensaje");
+  if (!userId || !ficha) return;
+  ficha.replaceChildren();
+  estado.textContent = "Cargando historial del alumno...";
+
+  const { data: historial, error } = await supabaseClient
+    .from("actividad_alumnos")
+    .select("nombre, curso, evento, detalle, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(500);
+  if (error) {
+    console.error("Error al consultar el historial del alumno:", error);
+    estado.textContent = "No se pudo cargar el historial de este alumno.";
+    return;
+  }
+  if (!historial?.length) {
+    estado.textContent = "Este alumno todavía no tiene actividad registrada.";
+    return;
+  }
+
+  const panel = document.createElement("section");
+  panel.style.cssText = "padding:16px;background:#fff;border:1px solid #c9def8;border-radius:12px;";
+  const encabezado = document.createElement("div");
+  encabezado.style.cssText = "display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;";
+  const titulo = document.createElement("h4");
+  titulo.style.cssText = "margin:0;color:#17365d;";
+  titulo.textContent = `Historial de ${historial[0].nombre || "alumno"} · ${historial[0].curso || "Curso no indicado"}`;
+  const cerrar = document.createElement("button");
+  cerrar.type = "button";
+  cerrar.textContent = "Cerrar historial";
+  cerrar.style.cssText = "padding:7px 11px;border:1px solid #cbd5e1;border-radius:7px;background:#f8fafc;cursor:pointer;";
+  cerrar.addEventListener("click", () => panel.remove());
+  encabezado.append(titulo, cerrar);
+  panel.appendChild(encabezado);
+
+  const resumen = document.createElement("p");
+  resumen.style.cssText = "margin:0 0 12px;color:#52647a;font-size:13px;";
+  resumen.textContent = `${historial.length} eventos mostrados · Ordenados del más reciente al más antiguo.`;
+  panel.appendChild(resumen);
+
+  const tablaHistorial = document.createElement("table");
+  tablaHistorial.style.cssText = "width:100%;border-collapse:collapse;min-width:520px;background:#fff;font-size:13px;";
+  const theadHistorial = document.createElement("thead");
+  theadHistorial.innerHTML = `<tr style="background:#eaf3ff;text-align:left"><th style="padding:9px;border-bottom:1px solid #d8e5f5">Fecha y hora</th><th style="padding:9px;border-bottom:1px solid #d8e5f5">Actividad</th><th style="padding:9px;border-bottom:1px solid #d8e5f5">Detalle</th></tr>`;
+  tablaHistorial.appendChild(theadHistorial);
+  const cuerpoHistorial = document.createElement("tbody");
+  const fechaLocal = valor => valor ? new Date(valor).toLocaleString("es-ES", { dateStyle:"short", timeStyle:"short" }) : "—";
+  historial.forEach(item => {
+    const fila = document.createElement("tr");
+    fila.style.borderBottom = "1px solid #e5edf6";
+    const tipo = item.evento === "asignatura" ? "Asignatura visitada" : item.evento === "documento" ? "Documento pulsado" : "Acceso a la zona privada";
+    [fechaLocal(item.created_at), tipo, item.detalle || "—"].forEach(valor => {
+      const celda = document.createElement("td");
+      celda.textContent = valor;
+      celda.style.cssText = "padding:9px;vertical-align:top;";
+      fila.appendChild(celda);
+    });
+    cuerpoHistorial.appendChild(fila);
+  });
+  tablaHistorial.appendChild(cuerpoHistorial);
+  const envoltorioTabla = document.createElement("div");
+  envoltorioTabla.style.overflowX = "auto";
+  envoltorioTabla.appendChild(tablaHistorial);
+  panel.appendChild(envoltorioTabla);
+  ficha.replaceChildren(panel);
+  estado.textContent = `Historial cargado: ${historial.length} eventos.`;
+});
 
 document.getElementById("admin-cargar")?.addEventListener("click", adminCargarMateriales);
 document.getElementById("admin-guardar-orden")?.addEventListener("click", adminGuardarOrden);
