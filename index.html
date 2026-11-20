@@ -1728,6 +1728,68 @@ header nav a { margin: 0; }
 }
 </style>
 
+
+
+<style id="mejora-portada-movil-noviembre">
+/* Portada móvil más compacta: botones proporcionados y primera pantalla equilibrada */
+@media (max-width: 650px) {
+  #inicio.hero {
+    grid-template-rows: auto 220px auto !important;
+    margin: 0 0 20px !important;
+    border-radius: 0 0 16px 16px !important;
+  }
+  #inicio .portada-contenido {
+    padding: 24px 22px 22px !important;
+  }
+  #inicio .marca-portada h2 {
+    font-size: clamp(32px, 8vw, 42px) !important;
+    line-height: 1.04 !important;
+  }
+  #inicio .acento-portada { margin: 10px 0 12px !important; }
+  #inicio .lema-portada {
+    margin-bottom: 10px !important;
+    font-size: clamp(19px, 5vw, 22px) !important;
+  }
+  #inicio .texto-portada {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+  }
+  #inicio .botones-portada {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+    padding: 0 !important;
+  }
+  #inicio .botones-portada a {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 56px !important;
+    height: auto !important;
+    flex: none !important;
+    justify-content: space-between !important;
+    padding: 13px 17px !important;
+    border-radius: 13px !important;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    gap: 12px !important;
+  }
+  #inicio .botones-portada a span { font-size: 1.2em !important; }
+  #inicio .imagen-portada {
+    min-height: 220px !important;
+    height: 220px !important;
+  }
+}
+@media (max-width: 420px) {
+  #inicio .portada-contenido { padding: 22px 18px 20px !important; }
+  #inicio .marca-portada h2 { font-size: 34px !important; }
+  #inicio .botones-portada a { min-height: 52px !important; padding: 12px 15px !important; font-size: 15px !important; }
+}
+</style>
+
 </head>
 <body>
   <header>
@@ -1753,7 +1815,7 @@ header nav a { margin: 0; }
     </p>
     <div class="botones-portada">
       <a class="boton-alumnos" href="#acceso" onclick="mostrarApartado('acceso'); return false;">Acceso alumnos <span aria-hidden="true">→</span></a>
-      <a class="boton-academia" href="#nuestra-academia" onclick="mostrarApartado('nuestra-academia'); return false;">Conoce la academia <span aria-hidden="true">→</span></a>
+      <a class="boton-academia" href="#nuestra-academia" onclick="mostrarApartado('nuestra-academia'); return false;">Conoce nuestra academia <span aria-hidden="true">→</span></a>
     </div>
   </div>
   <div class="portada-foto-wrap">
