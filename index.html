@@ -2066,7 +2066,7 @@ header nav a { margin: 0; }
           <div class="bloque-asignatura" id="bloque-apuntes-tecnologia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','tecnologia',this)">Tecnología <span>＋</span></button><div class="contenido-asignatura" id="apuntes-tecnologia" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="apuntes-lengua" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="apuntes-dibujo" hidden></div></div>
-          <div class="bloque-asignatura asignatura-solo-bachiller" id="bloque-apuntes-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="apuntes-economia" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-apuntes-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('apuntes','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="apuntes-economia" hidden></div></div>
         </div>
         <div id="lista-documentos" class="lista-materiales" hidden></div>
         <p id="sin-materiales-documentos" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
@@ -2086,7 +2086,7 @@ header nav a { margin: 0; }
           <div class="bloque-asignatura" id="bloque-ejercicios-tecnologia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','tecnologia',this)">Tecnología <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-tecnologia" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','lengua',this)">Lengua <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-lengua" hidden></div></div>
           <div class="bloque-asignatura"><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','dibujo',this)">Dibujo <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-dibujo" hidden></div></div>
-          <div class="bloque-asignatura asignatura-solo-bachiller" id="bloque-ejercicios-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-economia" hidden></div></div>
+          <div class="bloque-asignatura" id="bloque-ejercicios-economia" hidden><button class="boton-asignatura" type="button" aria-expanded="false" onclick="abrirAsignatura('ejercicios','economia',this)">Economía <span>＋</span></button><div class="contenido-asignatura" id="ejercicios-economia" hidden></div></div>
         </div>
         <div id="lista-ejercicios" class="lista-materiales" hidden></div>
         <p id="sin-materiales-ejercicios" class="sin-materiales" hidden>No hay materiales de esta asignatura todavía.</p>
@@ -2447,7 +2447,10 @@ async function cargarMateriales(cursoAlumno) {
   const cursoNormalizado = normalizarCurso(cursoAlumno);
   const esPrimeroBachiller = cursoNormalizado === "1 bachiller";
   const esSegundoBachiller = cursoNormalizado === "2 bachiller";
-  const cursoVisibleEconomia = esPrimeroBachiller || esSegundoBachiller;
+  // Economía está disponible en 4.º de ESO y en 1.º y 2.º de Bachillerato.
+  // Se admiten variantes habituales del nombre del curso (4 ESO, 4º ESO, 4º de ESO).
+  const esCuartoESO = /^4(?:º|o)?(?: de)? eso$/.test(cursoNormalizado);
+  const cursoVisibleEconomia = esCuartoESO || esPrimeroBachiller || esSegundoBachiller;
   ["bloque-apuntes-economia", "bloque-ejercicios-economia"].forEach(id => {
     const bloque = document.getElementById(id);
     if (bloque) bloque.hidden = !cursoVisibleEconomia;
